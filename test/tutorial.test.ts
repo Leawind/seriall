@@ -7,9 +7,7 @@ import seriall, {
 } from '@/mod.ts';
 
 Deno.test(function tutorial_Simple() {
-	const alice = {
-		name: '',
-	};
+	const alice = { name: '' };
 	const json = seriall.stringify(alice);
 	const dolly = seriall.parse<typeof alice>(json);
 
@@ -30,11 +28,10 @@ Deno.test(function tutorial_Simple_Custom_Class() {
 		}
 	}
 
-	const opt: SeriallOptions = { values: { Sheep } };
+	const options: SeriallOptions = { values: { Sheep } };
 
 	const sheep = new Sheep();
-	const json = seriall.stringify(sheep, opt);
-	const dolly = seriall.parse<Sheep>(json, opt);
+	const dolly = seriall.deepClone(sheep, options);
 
 	assert(sheep instanceof Sheep);
 	assert(dolly instanceof Sheep);

@@ -42,11 +42,41 @@ Parse a string and get the object:
 seriall.parse<T>(str: string, options: SeriallOptions = {}): T;
 ```
 
+### Deep clone
+
+Deep clone an object. This function serialize the given object and then deserialize it.
+
+```ts
+seriall.deepClone<T>(obj: T, options: SeriallOptions = {}): T;
+```
+
 ## Examples
 
 ### Simple value
 
-### Instance of native Class
+```ts
+const alice = { name: '' };
+const json = seriall.stringify(alice);
+const dolly = seriall.parse<typeof alice>(json);
+
+assert(alice.name === dolly.name);
+```
+
+### Instance of bulit-in Class
+
+```ts
+const original = new Map<unknown, unknown>([
+	['name', 'Steve'],
+	['effect', new Set()],
+	['pos', [-2, 64, 1.23]],
+]);
+// deepClone means serialize and then deserialize
+const cloned = seriall.deepClone(original);
+
+assertStrictEquals(cloned.get('name'), 'Steve');
+assert(cloned.get('effect') instanceof Set);
+assert((cloned.get('pos') as number[])[2] === 1.23);
+```
 
 ### Instance of custom Class
 
@@ -64,15 +94,10 @@ class Sheep {
 	}
 }
 
-const opt: SeriallOptions = { values: { Sheep } };
+const options: SeriallOptions = { values: { Sheep } };
 
-// Origin object
 const sheep = new Sheep();
-
-const json = seriall.stringify(sheep, opt);
-
-// Cloned object
-const dolly = seriall.parse<Sheep>(json, opt);
+const dolly = seriall.deepClone(sheep, options);
 
 assert(sheep instanceof Sheep);
 assert(dolly instanceof Sheep);
@@ -85,9 +110,7 @@ assert(dolly.getName() === 'Dolly');
 
 ## Builtin adapters
 
-Some types like `Date`, `Int8Array` have their internal properties, they can't be simply described like regular object (for example: `{name: 'Steve'}`). So I have written adapters for them. Those adapters for native types in JavaScript are "Builtin Adapters".
-
-### Builtin Adapters
+You may have noticed this in previous example about built-in class instance. Some types like `Map`, `Date`, `Int8Array` have their internal properties, they can't be simply described like regular object (for example: `{name: 'Steve'}`). So I have made some adapters for them.
 
 These are supported builtin adapters.
 
@@ -99,7 +122,6 @@ These are supported builtin adapters.
 
 These are not supported yet.
 
--   `Iterator`
 -   `URLSearchParams`
 -   `Event`
 
@@ -110,3 +132,5 @@ These types are unserializable and won't be supported.
 -   `Worker` `SharedArrayBuffer`
 -   `Iterator` `Proxy` `Promise` `WebSocket`
 -   `Error` `AggregateError` `EvalError` `RangeError` `ReferenceError` `SyntaxError` `TypeError` `URIError`
+
+The implementation of those built-in adapters are at `src/seriall/builtin/adapters.ts`. You can also implement adapter for your custom Class.
