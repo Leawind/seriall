@@ -1,0 +1,36 @@
+{
+	"name": "@leawind/seriall",
+	"publish": {
+		"include": [
+			"src/"
+		]
+	},
+	"version": "0.1.0",
+	"license": "GPLv3",
+	"exports": "./src/mod.ts",
+	"tasks": {
+		"dev": "deno test --watch --parallel"
+	},
+	"test": {
+		"include": [
+			"test/**/*.test.ts"
+		]
+	},
+	"imports": {
+		"@std": "jsr:@std",
+		"@/": "./src/"
+	},
+	"fmt": {
+		"useTabs": true,
+		"lineWidth": 80,
+		"indentWidth": 4,
+		"semiColons": true,
+		"singleQuote": true,
+		"proseWrap": "preserve",
+		"include": [
+			"src/",
+			"test/"
+		],
+		"exclude": []
+	}
+}
