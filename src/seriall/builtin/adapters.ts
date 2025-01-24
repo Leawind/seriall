@@ -102,6 +102,13 @@ export const BUILTIN_ADAPTERS: SeriallAdapters = new Map([
 				len: number;
 			}) => new DataView(pure.buf, pure.off, pure.len),
 		}),
+		[ByteLengthQueuingStrategy.name]: typed({
+			serialize: (obj: ByteLengthQueuingStrategy) => ({
+				hwm: obj.highWaterMark,
+			}),
+			deserialize: (pure: { hwm: number }) =>
+				new ByteLengthQueuingStrategy({ highWaterMark: pure.hwm }),
+		}),
 	}),
 
 	// Typed Arrays

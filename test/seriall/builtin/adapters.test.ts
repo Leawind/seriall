@@ -307,3 +307,16 @@ Deno.test(function testURLSearchParamsSorting() {
 
 	assertStrictEquals([...cloned.keys()].join(','), 'z,a,m');
 });
+
+Deno.test(function testByteLengthQueuingStrategy() {
+	const original = new ByteLengthQueuingStrategy({ highWaterMark: 1024 });
+	const cloned = seriall.deepClone(original);
+
+	assertStrictEquals(original.highWaterMark, cloned.highWaterMark);
+
+	const testChunk = new Uint8Array([1, 2, 3, 4]);
+	assertStrictEquals(
+		original.size(testChunk),
+		cloned.size(testChunk),
+	);
+});
