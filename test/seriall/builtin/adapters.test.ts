@@ -25,7 +25,7 @@ Deno.test(function find() {
 			}
 		}
 	}
-	console.log(`These builtin classes have no adapter:`);
+	console.log(`These builtin functions have no adapter:`);
 	console.log(classes.join(', '));
 });
 
