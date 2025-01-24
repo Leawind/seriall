@@ -50,6 +50,11 @@ export const BUILTIN_ADAPTERS: SeriallAdapters = new Map([
 			serialize: (obj: URL) => obj.href,
 			deserialize: (pure: string) => new URL(pure),
 		}),
+		[URLSearchParams.name]: typed({
+			serialize: (obj: URLSearchParams) => [...obj.entries()],
+			deserialize: (pure: [string, string][]) =>
+				new URLSearchParams(pure),
+		}),
 		[URLPattern.name]: typed({
 			serialize: (obj: URLPattern) => ({
 				P: obj.protocol,

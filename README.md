@@ -116,13 +116,12 @@ These are supported builtin adapters.
 
 -   `Number` `String` `Boolean`
 -   `Map` `Set`
--   `Date` `RegExp` `URL` `URLPattern`
+-   `Date` `RegExp` `URL` `URLSearchParams` `URLPattern`
 -   `ArrayBuffer` `DataView`
 -   `Uint8Array` `Uint8ClampedArray` `Int8Array` `Uint16Array` `Int16Array` `Uint32Array` `Int32Array` `Float16Array` `Float32Array` `Float64Array` `BigUint64Array` `BigInt64Array`
 
 These are not supported yet.
 
--   `URLSearchParams`
 -   `Event`
 
 These types are unserializable and won't be supported.

@@ -280,3 +280,30 @@ Deno.test(function testUnserializable() {
 		Error,
 	);
 });
+
+Deno.test(function testURLSearchParams() {
+	[
+		new URLSearchParams('a=1&b=&c=hello%20world'),
+		new URLSearchParams('a=1&a=2&a=3'),
+		new URLSearchParams('key=='),
+		new URLSearchParams(),
+	].forEach((original) => {
+		const cloned = seriall.deepClone(original);
+		assertStrictEquals(
+			original.toString(),
+			cloned.toString(),
+			`Failed case: ${original.toString()}`,
+		);
+	});
+});
+
+Deno.test(function testURLSearchParamsSorting() {
+	const orderedParams = new URLSearchParams();
+	orderedParams.append('z', '3');
+	orderedParams.append('a', '1');
+	orderedParams.append('m', '2');
+
+	const cloned = seriall.deepClone(orderedParams);
+
+	assertStrictEquals([...cloned.keys()].join(','), 'z,a,m');
+});
