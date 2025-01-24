@@ -30,22 +30,22 @@ Deno.test(function find() {
 });
 
 Deno.test(function testNumber() {
-	const origin = new Number(12138);
-	const cloned = seriall.deepClone<typeof origin>(origin);
+	const original = new Number(12138);
+	const cloned = seriall.deepClone<typeof original>(original);
 	assert(cloned instanceof Number);
-	assertStrictEquals(origin.toString(), cloned.toString());
+	assertStrictEquals(original.toString(), cloned.toString());
 });
 Deno.test(function testBoolean() {
-	const origin = new Boolean(12138);
-	const cloned = seriall.deepClone<typeof origin>(origin);
+	const original = new Boolean(12138);
+	const cloned = seriall.deepClone<typeof original>(original);
 	assert(cloned instanceof Boolean);
-	assertStrictEquals(origin.toString(), cloned.toString());
+	assertStrictEquals(original.toString(), cloned.toString());
 });
 Deno.test(function testString() {
-	const origin = new String('Hello world!');
-	const cloned = seriall.deepClone<typeof origin>(origin);
+	const original = new String('Hello world!');
+	const cloned = seriall.deepClone<typeof original>(original);
 	assert(cloned instanceof String);
-	assertStrictEquals(origin.toString(), cloned.toString());
+	assertStrictEquals(original.toString(), cloned.toString());
 });
 
 Deno.test(function testDate() {
