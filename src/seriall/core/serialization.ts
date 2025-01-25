@@ -35,10 +35,13 @@ export function serializeRecursively<T>(
 	}
 
 	// Search obj in map. If `obj` is already in `pures`, just return its index
-	let index = seen.get(obj);
-	if (typeof index === 'number') {
-		return index;
+	if (seen.has(obj)) {
+		return seen.get(obj)!;
 	}
+
+	const index = pures.length;
+	seen.set(obj, index);
+	pures.push(null);
 
 	// Create a new `Pure`
 	let pure: SeriallPure;
@@ -171,9 +174,7 @@ export function serializeRecursively<T>(
 				throw new Error(`Unsupported type: "${typeof obj}"`);
 		}
 	}
-	pures.push(pure);
-	index = pures.length - 1;
-	seen.set(obj, index);
+	pures[index] = pure;
 	return index;
 }
 
@@ -284,6 +285,8 @@ export function deserializeRecursively<T>(
 							get<{ prototype: object }>(pure[PureKey.Class])
 								.prototype,
 						);
+						result = obj as T;
+						seen.set(index, result);
 						for (
 							const [key, valueIndex, desc]
 								of pure[PureKey.Properties]
@@ -301,7 +304,6 @@ export function deserializeRecursively<T>(
 								},
 							);
 						}
-						result = obj as T;
 						break;
 					}
 					default:

@@ -159,3 +159,33 @@ Deno.test(function testSameObject() {
 	assert(original.left === original.right);
 	assert(cloned.left === cloned.right);
 });
+
+Deno.test(function selfRefer() {
+	type Reference<T> = { ref?: T };
+
+	const original: Reference<unknown> = {};
+	original.ref = original;
+
+	assert(original === original.ref);
+	const cloned = seriall.deepClone(original);
+	assert(cloned === cloned.ref);
+});
+
+Deno.test(function circularRefer() {
+	type Reference<T> = { ref?: T };
+
+	const a: Reference<unknown> = {};
+	const b: Reference<unknown> = {};
+	const c: Reference<unknown> = {};
+
+	a.ref = b;
+	b.ref = c;
+	c.ref = a;
+
+	const original = { a, b, c };
+
+	const cloned = seriall.deepClone(original);
+
+	assertStrictEquals(cloned.a.ref, cloned.b);
+	assertStrictEquals(cloned.b.ref, cloned.c);
+});

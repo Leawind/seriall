@@ -33,5 +33,5 @@ export function pures2obj<T>(
 	pures: SeriallPure[],
 	contexts: SeriallContext[],
 ): T {
-	return deserializeRecursively(pures.length - 1, pures, contexts);
+	return deserializeRecursively(0, pures, contexts);
 }
