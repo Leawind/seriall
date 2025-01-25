@@ -1,6 +1,6 @@
 {
 	"name": "@leawind/seriall",
-	"version": "0.3.0",
+	"version": "0.3.1",
 	"license": "GPLv3",
 	"exports": "./src/mod.ts",
 	"tasks": {
