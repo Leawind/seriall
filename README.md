@@ -4,11 +4,11 @@
 
 ```mermaid
 flowchart LR
-	obj((Object))
+	val((Value))
 	pures{{Pures}}
-	json[String]
+	str[String]
 
-	obj <--> pures <--> json;
+	val <--> pures <--> str;
 ```
 
 | Value               | Pures                                                    | String (JSON Format)                                               |
@@ -21,7 +21,7 @@ flowchart LR
 | `new Set()`         | `[{T:8,N:"Set",V:1},[]]`                                 | `[{"T":8,"N":"Set","V":1},[]]`                                     |
 | `{ name: 'Steve' }` | `[{T:6,C:1,P:[["name",2,{}]]},{T:7,K:"Object"},"Steve"]` | `[{"T":6,"C":1,"P":[["name",2,{}]]},{"T":7,"K":"Object"},"Steve"]` |
 
-- **Object** - It can be any value, but for some special type of values, you may need to specify some extra information to make it work.
+- **Value** - It can be any value, but for some special type of values, you may need to specify some extra information to make it work.
 - **Pures** - It can be directly converted to JSON string, then converted back and remain unchanged.
 - **String** - A string in JSON format.
 
