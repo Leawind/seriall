@@ -160,7 +160,7 @@ Deno.test(function testArrayBuffer_Empty() {
 	assertStrictEquals(cloned.byteLength, 0);
 });
 
-Deno.test(function test16bitsArray() {
+Deno.test(function testTypedArray() {
 	[
 		...[Uint8ClampedArray, Uint8Array, Int8Array],
 		...[Uint16Array, Int16Array, Float16Array],
@@ -182,6 +182,24 @@ Deno.test(function test16bitsArray() {
 			2147483647,
 			4294967295,
 		]);
+		const cloned = seriall.deepClone(original);
+
+		assertStrictEquals(original.length, cloned.length);
+		for (let i = 0; i < original.length; i++) {
+			assertStrictEquals(original[i], cloned[i]);
+		}
+	});
+});
+
+Deno.test(function testLongTypedArray() {
+	[
+		...[Uint8ClampedArray, Uint8Array, Int8Array],
+		...[Uint16Array, Int16Array, Float16Array],
+		...[Uint32Array, Int32Array, Float32Array],
+		Float64Array,
+	].forEach((clazz) => {
+		const SIZE = 16384;
+		const original = new clazz(new Array(SIZE).fill(2));
 		const cloned = seriall.deepClone(original);
 
 		assertStrictEquals(original.length, cloned.length);

@@ -21,16 +21,17 @@ export const BUILTIN_ADAPTERS: SeriallAdapters = new Map([
 
 	...Object.entries({
 		[Set.name]: typed({
-			serialize: (obj: Set<unknown>) => [...obj],
+			serialize: (obj: Set<unknown>) => Array.from(obj),
 			deserialize: (pure: PureIndex[]) => new Set(pure),
 		}),
 		[Map.name]: typed({
-			serialize: (obj: Map<unknown, unknown>) => [
-				...obj.entries()
-					.map<[unknown, unknown]>((
-						[key, value],
-					) => [key, value]),
-			],
+			serialize: (obj: Map<unknown, unknown>) =>
+				Array.from(
+					obj.entries()
+						.map<[unknown, unknown]>(
+							([key, value]) => [key, value],
+						),
+				),
 			deserialize: (pure: [PureIndex, PureIndex][]) =>
 				new Map(pure.map(([kid, vid]) => [kid, vid])),
 		}),
@@ -51,7 +52,7 @@ export const BUILTIN_ADAPTERS: SeriallAdapters = new Map([
 			deserialize: (pure: string) => new URL(pure),
 		}),
 		[URLSearchParams.name]: typed({
-			serialize: (obj: URLSearchParams) => [...obj.entries()],
+			serialize: (obj: URLSearchParams) => Array.from(obj.entries()),
 			deserialize: (pure: [string, string][]) =>
 				new URLSearchParams(pure),
 		}),
@@ -79,8 +80,21 @@ export const BUILTIN_ADAPTERS: SeriallAdapters = new Map([
 				}),
 		}),
 		[ArrayBuffer.name]: typed({
-			serialize: (obj: ArrayBuffer) =>
-				btoa(String.fromCharCode(...new Uint8Array(obj))),
+			serialize: (obj: ArrayBuffer) => {
+				const arr = new Uint8Array(obj);
+				const chunkSize = 32768;
+				let bin = '';
+
+				for (let i = 0; i < arr.length; i += chunkSize) {
+					const chunk = arr.subarray(i, i + chunkSize);
+					bin += String.fromCharCode.apply(
+						null,
+						chunk as unknown as number[],
+					);
+				}
+
+				return btoa(bin);
+			},
 			deserialize: (pure: string) => {
 				const bin = atob(pure);
 				const arr = new Uint8Array(bin.length);
