@@ -123,6 +123,23 @@ export const BUILTIN_ADAPTERS: SeriallAdapters = new Map([
 			deserialize: (pure: { hwm: number }) =>
 				new ByteLengthQueuingStrategy({ highWaterMark: pure.hwm }),
 		}),
+		[ImageData.name]: typed({
+			serialize: (obj: ImageData) => ({
+				d: obj.data.buffer,
+				w: obj.width,
+				h: obj.height,
+			}),
+			deserialize: (pure: {
+				d: ArrayBuffer;
+				w: number;
+				h: number;
+			}) =>
+				new ImageData(
+					new Uint8ClampedArray(pure.d),
+					pure.w,
+					pure.h,
+				),
+		}),
 	}),
 
 	// Typed Arrays

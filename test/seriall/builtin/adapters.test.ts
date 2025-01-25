@@ -338,3 +338,41 @@ Deno.test(function testByteLengthQueuingStrategy() {
 		cloned.size(testChunk),
 	);
 });
+Deno.test(function testImageDataBasic() {
+	const data = new Uint8ClampedArray([
+		...[255, 0, 0, 255],
+		...[0, 255, 0, 255],
+		...[0, 0, 255, 255],
+		...[255, 255, 255, 0],
+	]);
+	const original = new ImageData(data, 2, 2);
+	const cloned = seriall.deepClone(original);
+
+	assertStrictEquals(original.width, cloned.width);
+	assertStrictEquals(original.height, cloned.height);
+
+	for (let i = 0; i < original.data.length; i++) {
+		assertStrictEquals(original.data[i], cloned.data[i]);
+	}
+});
+
+Deno.test(function testLargeImageData() {
+	const SIZE = 1024;
+	const data = new Uint8ClampedArray(SIZE * SIZE * 4);
+	for (let i = 0; i < data.length; i += 4) {
+		data[i] = i % 256; // R
+		data[i + 1] = (i + 1) % 256; // G
+		data[i + 2] = (i + 2) % 256; // B
+		data[i + 3] = 255; // A
+	}
+
+	const original = new ImageData(data, SIZE, SIZE);
+	const cloned = seriall.deepClone(original);
+
+	// 验证随机采样点
+	const testIndexes = [0, 1024, data.length - 4];
+	for (const i of testIndexes) {
+		assertStrictEquals(original.data[i], cloned.data[i]);
+		assertStrictEquals(original.data[i + 3], cloned.data[i + 3]);
+	}
+});
