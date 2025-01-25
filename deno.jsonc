@@ -1,10 +1,5 @@
 {
 	"name": "@leawind/seriall",
-	"publish": {
-		"include": [
-			"src/"
-		]
-	},
 	"version": "0.1.0",
 	"license": "GPLv3",
 	"exports": "./src/mod.ts",
