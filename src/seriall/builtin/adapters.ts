@@ -1,5 +1,6 @@
 import type { Adapter, ContextAdapters } from '@/seriall/core/context.ts';
 import type { PureIndex } from '@/seriall/core/pure.ts';
+import { BUILTIN_PALETTE } from '@/seriall/builtin/palette.ts';
 
 export function typed<A, B>(adapter: Adapter<A, B>) {
 	return adapter;
@@ -20,11 +21,11 @@ export const BUILTIN_ADAPTERS: ContextAdapters = new Map([
 		]),
 
 	...Object.entries({
-		[Set.name]: typed({
+		Set: typed({
 			serialize: (obj: Set<unknown>) => Array.from(obj),
 			deserialize: (pure: PureIndex[]) => new Set(pure),
 		}),
-		[Map.name]: typed({
+		Map: typed({
 			serialize: (obj: Map<unknown, unknown>) =>
 				Array.from(
 					obj.entries()
@@ -36,27 +37,27 @@ export const BUILTIN_ADAPTERS: ContextAdapters = new Map([
 				new Map(pure.map(([kid, vid]) => [kid, vid])),
 		}),
 
-		[Date.name]: typed({
+		Date: typed({
 			serialize: (obj: Date) => obj.valueOf(),
 			deserialize: (pure: number) => new Date(pure),
 		}),
-		[RegExp.name]: typed({
+		RegExp: typed({
 			serialize: (obj: RegExp) => ({
 				src: obj.source,
 				flags: obj.flags,
 			}),
 			deserialize: (pure) => new RegExp(pure.src, pure.flags),
 		}),
-		[URL.name]: typed({
+		URL: typed({
 			serialize: (obj: URL) => obj.href,
 			deserialize: (pure: string) => new URL(pure),
 		}),
-		[URLSearchParams.name]: typed({
+		URLSearchParams: typed({
 			serialize: (obj: URLSearchParams) => Array.from(obj.entries()),
 			deserialize: (pure: [string, string][]) =>
 				new URLSearchParams(pure),
 		}),
-		[URLPattern.name]: typed({
+		URLPattern: typed({
 			serialize: (obj: URLPattern) => ({
 				P: obj.protocol,
 				U: obj.username,
@@ -79,7 +80,7 @@ export const BUILTIN_ADAPTERS: ContextAdapters = new Map([
 					hash: pure.hash,
 				}),
 		}),
-		[ArrayBuffer.name]: typed({
+		ArrayBuffer: typed({
 			serialize: (obj: ArrayBuffer) => {
 				const arr = new Uint8Array(obj);
 				const chunkSize = 32768;
@@ -104,7 +105,7 @@ export const BUILTIN_ADAPTERS: ContextAdapters = new Map([
 				return arr.buffer;
 			},
 		}),
-		[DataView.name]: typed({
+		DataView: typed({
 			serialize: (obj: DataView) => ({
 				buf: obj.buffer,
 				off: obj.byteOffset,
@@ -116,14 +117,14 @@ export const BUILTIN_ADAPTERS: ContextAdapters = new Map([
 				len: number;
 			}) => new DataView(pure.buf, pure.off, pure.len),
 		}),
-		[ByteLengthQueuingStrategy.name]: typed({
+		ByteLengthQueuingStrategy: typed({
 			serialize: (obj: ByteLengthQueuingStrategy) => ({
 				hwm: obj.highWaterMark,
 			}),
 			deserialize: (pure: { hwm: number }) =>
 				new ByteLengthQueuingStrategy({ highWaterMark: pure.hwm }),
 		}),
-		[ImageData.name]: typed({
+		ImageData: typed({
 			serialize: (obj: ImageData) => ({
 				d: obj.data.buffer,
 				w: obj.width,
@@ -140,7 +141,7 @@ export const BUILTIN_ADAPTERS: ContextAdapters = new Map([
 					pure.h,
 				),
 		}),
-		[Headers.name]: typed({
+		Headers: typed({
 			serialize: (obj: Headers) => Array.from(obj),
 			deserialize: (pure: [string, string][]) => new Headers(pure),
 		}),
@@ -148,72 +149,74 @@ export const BUILTIN_ADAPTERS: ContextAdapters = new Map([
 
 	// Typed Arrays
 	...[
-		Uint8ClampedArray,
-		Uint8Array,
-		Int8Array,
-
-		Uint16Array,
-		Int16Array,
-		Float16Array,
-
-		Uint32Array,
-		Int32Array,
-		Float32Array,
-
-		Float64Array,
-		BigUint64Array,
-		BigInt64Array,
-	].map<[string, Adapter<unknown, unknown>]>((clazz) => [
-		clazz.name,
+		'Uint8ClampedArray',
+		'Uint8Array',
+		'Int8Array',
+		'Uint16Array',
+		'Int16Array',
+		'Float16Array',
+		'Uint32Array',
+		'Int32Array',
+		'Float32Array',
+		'Float64Array',
+		'BigUint64Array',
+		'BigInt64Array',
+	].map<[string, Adapter<unknown, unknown>]>((name) => [
+		name,
 		typed({
-			serialize: (obj) => obj.buffer, // instanceof ArrayBuffer
-			deserialize: (buffer: ArrayBuffer) => new clazz(buffer),
+			serialize: (obj: Int8Array) => obj.buffer, // instanceof ArrayBuffer
+			deserialize: (buffer: ArrayBuffer) =>
+				new (BUILTIN_PALETTE.getValue<typeof Int8Array>(name))(buffer),
 		}),
 	]),
 
 	// Unserializable
 	...[
-		Blob,
-		File,
-		FinalizationRegistry,
-		AbortController,
-		AbortSignal,
-		Proxy,
-		Promise,
-		WebSocket,
-		Worker,
-		SharedArrayBuffer,
-		Iterator,
-		ImageBitmap,
-		Window,
-		Navigator,
-		Request,
-		Response,
+		'Blob',
+		'File',
+		'FinalizationRegistry',
+		'AbortController',
+		'AbortSignal',
+		'Proxy',
+		'Promise',
+		'WebSocket',
+		'Worker',
+		'SharedArrayBuffer',
+		'Iterator',
+		'ImageBitmap',
+		'Window',
+		'Navigator',
+		'Request',
+		'Response',
 		...[
-			CloseEvent,
-			ErrorEvent,
-			Event,
-			MessageEvent,
-			CustomEvent,
-			PromiseRejectionEvent,
-			ProgressEvent,
+			'CloseEvent',
+			'ErrorEvent',
+			'Event',
+			'MessageEvent',
+			'CustomEvent',
+			'PromiseRejectionEvent',
+			'ProgressEvent',
 		],
-		...[WeakMap, WeakSet, WeakRef],
 		...[
-			Error,
-			AggregateError,
-			EvalError,
-			RangeError,
-			ReferenceError,
-			SyntaxError,
-			TypeError,
-			URIError,
+			'WeakMap',
+			'WeakSet',
+			'WeakRef',
 		],
-	].map<[string, Adapter<unknown, unknown>]>((clazz) => [
-		clazz.name,
+		...[
+			'Error',
+			'AggregateError',
+			'EvalError',
+			'RangeError',
+			'ReferenceError',
+			'SyntaxError',
+			'TypeError',
+			'URIError',
+		],
+	].map<[string, Adapter<unknown, unknown>]>((name) => [
+		name,
 		typed({
 			serialize: () => {
-				throw new Error(`Type ${clazz.name} cannot be serialized.`);
+				throw new Error(`Type ${name} cannot be serialized.`);
 			},
 			deserialize: () => undefined,
 		}),
