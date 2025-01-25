@@ -35,35 +35,13 @@ flowchart LR
 
 ## Installation
 
-### deno
-
-```bash
-deno add jsr:@leawind/seriall
-```
-
-### npm
-
-```bash
-npx jsr add @leawind/seriall
-```
-
-### yarn
-
-```bash
-yarn dlx jsr add @leawind/seriall
-```
-
-### pnpm
-
-```bash
-pnpm dlx jsr add @leawind/seriall
-```
-
-### bun
-
-```bash
-bunx jsr add @leawind/seriall
-```
+|          |                                     |
+| -------- | ----------------------------------- |
+| **deno** | `deno add jsr:@leawind/seriall`     |
+| **npm**  | `npx jsr add @leawind/seriall`      |
+| **yarn** | `yarn dlx jsr add @leawind/seriall` |
+| **pnpm** | `pnpm dlx jsr add @leawind/seriall` |
+| **bun**  | `bunx jsr add @leawind/seriall`     |
 
 ## Usage
 
