@@ -5,7 +5,7 @@ import {
 	PureKey,
 	PureType,
 } from '@/seriall/core/pure.ts';
-import { isGlobalSymbol, looksLikePrototype } from '../utils.ts';
+import { isGlobalSymbol, looksLikePrototype } from '@/seriall/utils.ts';
 import {
 	SeriallInvalidPureError,
 	SeriallReferredAdapterNotFoundError,

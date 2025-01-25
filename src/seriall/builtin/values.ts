@@ -1,6 +1,7 @@
 import { BiMap } from '@/seriall/utils/bimap.ts';
+import type { ContextValues } from '@/seriall/core/context.ts';
 
-export const BUILTIN_VALUES: BiMap<string, unknown> = (() => {
+export const BUILTIN_VALUES: ContextValues = (() => {
 	const context = new BiMap<string, unknown>();
 
 	const globalProps = new Function('return this')();
