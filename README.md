@@ -119,5 +119,6 @@ These are supported builtin adapters.
 -   `Date` `RegExp` `URL` `URLSearchParams` `URLPattern`
 -   `ArrayBuffer` `DataView`
 -   `Uint8Array` `Uint8ClampedArray` `Int8Array` `Uint16Array` `Int16Array` `Uint32Array` `Int32Array` `Float16Array` `Float32Array` `Float64Array` `BigUint64Array` `BigInt64Array`
+-   `ImageData` `ByteLengthQueuingStrategy`
 
 The implementation of those built-in adapters are at `src/seriall/builtin/adapters.ts`. You can also implement adapter for your custom Class.
