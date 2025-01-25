@@ -6,6 +6,26 @@ import seriall, {
 	SeriallResolveFailedError,
 } from '@/mod.ts';
 
+Deno.test(function examples() {
+	console.log(`| Value | Pures | String (JSON Format) |`);
+	console.log(`|-|-|-|`);
+	Object.entries({
+		'true': true,
+		'12138': 12138,
+		'16n': 16n,
+		"[80, 'http']": [80, 'http'],
+		'Math': Math,
+		'new Set()': new Set(),
+		"{ name: 'Steve' }": { name: 'Steve' },
+	}).map(([key, value]) =>
+		[
+			key,
+			seriall.stringify(value).replace(/"(\w)":/g, '$1:'),
+			seriall.stringify(value),
+		].map((s) => '`' + s + '`')
+	).map((s) => console.log('|', s.join(' | '), '|'));
+});
+
 Deno.test(function tutorial_Simple() {
 	const alice = { name: '' };
 	const json = seriall.stringify(alice);

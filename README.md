@@ -11,18 +11,27 @@ flowchart LR
 	obj <--> pures <--> json;
 ```
 
-| Object           | Pures                                                                | String (JSON Format)                                               | Type       |
-| ---------------- | -------------------------------------------------------------------- | ------------------------------------------------------------------ | ---------- |
-| `true`           | `[true]`                                                             | `[true]`                                                           | Raw        |
-| `16n`            | `[ { T: 3, V: "16" } ]`                                              | `[{"T":3,"V":"16"}]`                                               | BigInt     |
-| `[80, 'http']`   | `[ 80, "http", [0, 1] ]`                                             | `[80,"http",[0,1]]`                                                | Array      |
-| `Math`           | `[ { T: 7, K: "Math" } ]`                                            | `[{"T":7,"K":"Math"}]`                                             | RefValue   |
-| `new Set()`      | `[ [], { T: 8, N: "Set", V: 0 } ]`                                   | `[[],{"T":8,"N":"Set","V":0}]`                                     | RefAdapter |
-| `{name:'Steve'}` | `[{ T:7, K:"Object" }, "Steve", { T:6, C:0, P: [["name", 1, {}]] }]` | `[{"T":7,"K":"Object"},"Steve",{"T":6,"C":0,"P":[["name",1,{}]]}]` | Object     |
+| Value               | Pures                                                    | String (JSON Format)                                               |
+| ------------------- | -------------------------------------------------------- | ------------------------------------------------------------------ |
+| `12138`             | `[12138]`                                                | `[12138]`                                                          |
+| `true`              | `[true]`                                                 | `[true]`                                                           |
+| `16n`               | `[{T:3,V:"16"}]`                                         | `[{"T":3,"V":"16"}]`                                               |
+| `[80, 'http']`      | `[[1,2],80,"http"]`                                      | `[[1,2],80,"http"]`                                                |
+| `Math`              | `[{T:7,K:"Math"}]`                                       | `[{"T":7,"K":"Math"}]`                                             |
+| `new Set()`         | `[{T:8,N:"Set",V:1},[]]`                                 | `[{"T":8,"N":"Set","V":1},[]]`                                     |
+| `{ name: 'Steve' }` | `[{T:6,C:1,P:[["name",2,{}]]},{T:7,K:"Object"},"Steve"]` | `[{"T":6,"C":1,"P":[["name",2,{}]]},{"T":7,"K":"Object"},"Steve"]` |
 
--   **Object** - It can be any value, but for some special type of values, you may need to specify some extra information to make it work.
--   **Pures** - It can be directly converted to JSON string, then converted back and remain unchanged.
--   **String** - A string in JSON format.
+- **Object** - It can be any value, but for some special type of values, you may need to specify some extra information to make it work.
+- **Pures** - It can be directly converted to JSON string, then converted back and remain unchanged.
+- **String** - A string in JSON format.
+
+## Features
+
+- **Supports built-in types** (e.g., `Map`, `Date`, `ArrayBuffer`, `Uint8Array`)
+- **Supports circular references**
+- **Serializable custom class instances**
+- **Deep cloning capability**
+- **Lightweight & dependency-free**
 
 ## Usage
 
@@ -64,7 +73,7 @@ assert(alice.name === dolly.name);
 
 ### Instance of bulit-in Class
 
-```ts
+```typescript
 const original = new Map<unknown, unknown>([
 	['name', 'Steve'],
 	['effect', new Set()],
@@ -114,11 +123,31 @@ You may have noticed this in previous example about built-in class instance. Som
 
 These are supported builtin adapters.
 
--   `Number` `String` `Boolean`
--   `Map` `Set`
--   `Date` `RegExp` `URL` `URLSearchParams` `URLPattern`
--   `ArrayBuffer` `DataView`
--   `Uint8Array` `Uint8ClampedArray` `Int8Array` `Uint16Array` `Int16Array` `Uint32Array` `Int32Array` `Float16Array` `Float32Array` `Float64Array` `BigUint64Array` `BigInt64Array`
--   `ImageData` `ByteLengthQueuingStrategy` `Headers`
+- `Number` `String` `Boolean`
+- `Map` `Set`
+- `Date` `RegExp` `URL` `URLSearchParams` `URLPattern`
+- `ArrayBuffer` `DataView`
+- `Uint8Array` `Uint8ClampedArray` `Int8Array` `Uint16Array` `Int16Array` `Uint32Array` `Int32Array` `Float16Array` `Float32Array` `Float64Array` `BigUint64Array` `BigInt64Array`
+- `ImageData` `ByteLengthQueuingStrategy` `Headers`
 
 The implementation of those built-in adapters are at `src/seriall/builtin/adapters.ts`. You can also implement adapter for your custom Class.
+
+## Limitations
+
+- **Added properties on special instances**\
+  Manually added properties to arrays or any class instances with adapters (e.g., `Map`, `Date`, `ArrayBuffer`) will be **silently dropped**.\
+  Example:
+
+  ```ts
+  const arr = [1, 2];
+  arr.customProp = 'value'; // ❌ Won't survive serialization
+  ```
+
+- **No field filtering**\
+  All string-keyed own properties are serialized by default. Custom selection of serializable fields is not supported.
+
+- **Symbol-keyed properties**\
+  Properties with `Symbol` keys will be **ignored** during serialization.
+
+- **JavaScript/TypeScript only**\
+  Currently lacks cross-language support. Serialized data can only be deserialized in JavaScript/TypeScript environments.
