@@ -28,6 +28,8 @@
 		"singleQuote": true,
 		"proseWrap": "preserve",
 		"include": [
+			"README.md",
+			"deno.jsonc",
 			"src/",
 			"test/"
 		],
