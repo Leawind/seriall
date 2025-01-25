@@ -1,6 +1,6 @@
 # Seriall
 
-**Seriall** is a simple serialization library.
+**Seriall** is s simple serialization library for JavaScript / TypeScript, supports circular references and built-in types
 
 | Value               | Serialized                                               |
 | ------------------- | -------------------------------------------------------- |
