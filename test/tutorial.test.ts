@@ -4,8 +4,8 @@ import { assert } from '@std/assert/assert';
 import * as seriall from '@/mod.ts';
 
 Deno.test(function examples() {
-	console.log(`| Value | Pures | String (JSON Format) |`);
-	console.log(`|-|-|-|`);
+	console.log(`| Value | Serialized |`);
+	console.log(`|-|-|`);
 	Object.entries({
 		'true': true,
 		'12138': 12138,
@@ -18,7 +18,6 @@ Deno.test(function examples() {
 		[
 			key,
 			seriall.stringify(value).replace(/"(\w)":/g, '$1:'),
-			seriall.stringify(value),
 		].map((s) => '`' + s + '`')
 	).map((s) => console.log('|', s.join(' | '), '|'));
 });

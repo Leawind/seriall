@@ -2,28 +2,15 @@
 
 **Seriall** is a simple serialization library.
 
-```mermaid
-flowchart LR
-	val((Value))
-	pures{{Pures}}
-	str[String]
-
-	val <--> pures <--> str;
-```
-
-| Value               | Pures                                                    | String (JSON Format)                                               |
-| ------------------- | -------------------------------------------------------- | ------------------------------------------------------------------ |
-| `12138`             | `[12138]`                                                | `[12138]`                                                          |
-| `true`              | `[true]`                                                 | `[true]`                                                           |
-| `16n`               | `[{T:3,V:"16"}]`                                         | `[{"T":3,"V":"16"}]`                                               |
-| `[80, 'http']`      | `[[1,2],80,"http"]`                                      | `[[1,2],80,"http"]`                                                |
-| `Math`              | `[{T:7,K:"Math"}]`                                       | `[{"T":7,"K":"Math"}]`                                             |
-| `new Set()`         | `[{T:8,N:"Set",V:1},[]]`                                 | `[{"T":8,"N":"Set","V":1},[]]`                                     |
-| `{ name: 'Steve' }` | `[{T:6,C:1,P:[["name",2,{}]]},{T:7,K:"Object"},"Steve"]` | `[{"T":6,"C":1,"P":[["name",2,{}]]},{"T":7,"K":"Object"},"Steve"]` |
-
-- **Value** - It can be any value, but for some special type of values, you may need to specify some extra information to make it work.
-- **Pures** - It can be directly converted to JSON string, then converted back and remain unchanged.
-- **String** - A string in JSON format.
+| Value               | Serialized                                               |
+| ------------------- | -------------------------------------------------------- |
+| `12138`             | `[12138]`                                                |
+| `true`              | `[true]`                                                 |
+| `16n`               | `[{T:3,V:"16"}]`                                         |
+| `[80, 'http']`      | `[[1,2],80,"http"]`                                      |
+| `Math`              | `[{T:7,K:"Math"}]`                                       |
+| `new Set()`         | `[{T:8,N:"Set",V:1},[]]`                                 |
+| `{ name: 'Steve' }` | `[{T:6,C:1,P:[["name",2,{}]]},{T:7,K:"Object"},"Steve"]` |
 
 ## Features
 
