@@ -376,3 +376,21 @@ Deno.test(function testLargeImageData() {
 		assertStrictEquals(original.data[i + 3], cloned.data[i + 3]);
 	}
 });
+Deno.test(function testHeadersBasic() {
+	const original = new Headers();
+	original.set('Content-Type', 'application/json');
+	original.append('Accept', 'text/html');
+	original.append('Accept', 'application/xml');
+	original.append('Content-Type', 'application/xml');
+
+	const cloned = seriall.deepClone(original);
+
+	assertStrictEquals(
+		original.get('Content-Type'),
+		cloned.get('Content-Type'),
+	);
+	assertStrictEquals(
+		original.get('Accept'),
+		cloned.get('Accept'),
+	);
+});

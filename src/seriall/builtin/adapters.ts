@@ -140,6 +140,10 @@ export const BUILTIN_ADAPTERS: SeriallAdapters = new Map([
 					pure.h,
 				),
 		}),
+		[Headers.name]: typed({
+			serialize: (obj: Headers) => Array.from(obj),
+			deserialize: (pure: [string, string][]) => new Headers(pure),
+		}),
 	}),
 
 	// Typed Arrays
