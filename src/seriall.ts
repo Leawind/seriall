@@ -80,17 +80,6 @@ export function stringify<T>(obj: T, options: SeriallOptions = {}): string {
 	const pures = obj2pures(obj, contexts);
 	return JSON.stringify(pures);
 }
-/**
- * @deprecated
- * @see parse
- */
-export function parsePures<T>(
-	pures: Pure[],
-	options: SeriallOptions = {},
-): T {
-	const contexts = parseSeriallOptions(options);
-	return pures2obj(pures, contexts);
-}
 
 /**
  * Deserialize an object from an array of Pures
