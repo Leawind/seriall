@@ -10,7 +10,9 @@ import { obj2pures, pures2obj } from '@/seriall/core.ts';
 import { BUILTIN_ADAPTERS, BUILTIN_VALUES } from '@/seriall/builtin.ts';
 
 /**
- * Seriall is a simple serialization library.
+ * A simple serialization library.
+ *
+ * @module
  */
 const seriall = {
 	stringify,
