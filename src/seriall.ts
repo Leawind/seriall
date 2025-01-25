@@ -1,27 +1,24 @@
-import type { SeriallAdapter, SeriallContext } from '@/seriall/core/context.ts';
-import type { SeriallPure } from '@/seriall/core/pure.ts';
+import type { Context, ContextLike } from '@/seriall/core/context.ts';
+import type { Pure } from '@/seriall/core/pure.ts';
 import { obj2pures, pures2obj } from '@/seriall/core.ts';
-import { BUILTIN_ADAPTERS, BUILTIN_VALUES } from '@/seriall/builtin.ts';
-import { BiMap } from '@/seriall/utils.ts';
+import { BUILTIN_ADAPTERS } from '@/seriall/builtin/adapters.ts';
+import { BUILTIN_VALUES } from '@/seriall/builtin/values.ts';
+import { BiMap } from '@/seriall/utils/bimap.ts';
 
-export type SeriallContextBuilder = {
-	values?: Record<string, unknown>;
-	adapters?: Record<string, SeriallAdapter<unknown, unknown>>;
-};
-function buildSeriallContext(options: SeriallContextBuilder): SeriallContext {
+function buildSeriallContext(options: ContextLike): Context {
 	return {
 		values: BiMap.fromRecord(options.values || {}),
 		adapters: new Map(Object.entries(options.adapters || {})),
 	};
 }
 
-export type SeriallOptions = SeriallContextBuilder & {
-	contexts?: SeriallContextBuilder[];
+export type SeriallOptions = ContextLike & {
+	contexts?: ContextLike[];
 	builtinValues?: boolean;
 	builtinAdapters?: boolean;
 };
-function parseSeriallOptions(options: SeriallOptions): SeriallContext[] {
-	const contexts: SeriallContext[] = [];
+function parseSeriallOptions(options: SeriallOptions): Context[] {
+	const contexts: Context[] = [];
 
 	if (options.values || options.adapters) {
 		contexts.push(buildSeriallContext({
@@ -54,13 +51,13 @@ function parseSeriallOptions(options: SeriallOptions): SeriallContext[] {
  * @param options - Options for the serialization process.
  * @returns An array of SeriallPure objects.
  */
-export function purify<T>(obj: T, options: SeriallOptions = {}): SeriallPure[] {
+export function purify<T>(obj: T, options: SeriallOptions = {}): Pure[] {
 	const contexts = parseSeriallOptions(options);
 	return obj2pures(obj, contexts);
 }
 
 export function parsePures<T>(
-	pures: SeriallPure[],
+	pures: Pure[],
 	options: SeriallOptions = {},
 ): T {
 	const contexts = parseSeriallOptions(options);

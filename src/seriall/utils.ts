@@ -1,5 +1,3 @@
-import BiMap from '@/seriall/utils/bimap.ts';
-export { BiMap };
 /**
  * Checks if a symbol is registered in the global symbol registry.
  *
@@ -61,7 +59,7 @@ export function symbolToString(sb: symbol): string {
  * @param obj - The object to check
  * @returns True if the object looks like a prototype, false otherwise
  */
-export function looksLikePrototype(obj: unknown) {
+export function looksLikePrototype(obj: unknown): boolean {
 	if (obj === undefined) {
 		return false;
 	} else if (obj === null) {

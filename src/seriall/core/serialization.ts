@@ -1,33 +1,33 @@
-import type { SeriallAdapter, SeriallContext } from '@/seriall/core/context.ts';
+import type { Adapter, Context } from '@/seriall/core/context.ts';
 import {
+	type Pure,
 	type PureIndex,
 	PureKey,
 	PureType,
-	type SeriallPure,
 } from '@/seriall/core/pure.ts';
-import { isGlobalSymbol, looksLikePrototype } from '@/seriall/utils.ts';
+import { isGlobalSymbol, looksLikePrototype } from '../utils.ts';
 import {
 	SeriallInvalidPureError,
 	SeriallReferredAdapterNotFoundError,
 	SeriallReferredValueNotFoundError,
 	SeriallResolveFailedError,
 } from '@/seriall/core/error.ts';
-import { SpecialPureValue } from '@/mod.ts';
 
+import { SpecialPureValue } from '@/seriall/core/pure.ts';
 /**
  * Recursively sets a pure value.
  *
  * @template T
  * @param {T} obj - Object to be serialized
- * @param {SeriallPure[]} pures - Array of pure values
- * @param {SeriallContext[]} contexts - Array of contexts
+ * @param {Pure[]} pures - Array of pure values
+ * @param {Context[]} contexts - Array of contexts
  * @param {Map<unknown, number>} [seen=new Map()] - Map of seen objects
  * @returns {PureIndex} - Index of the pure value
  */
 export function serializeRecursively<T>(
 	obj: T,
-	pures: SeriallPure[],
-	contexts: SeriallContext[],
+	pures: Pure[],
+	contexts: Context[],
 	seen: Map<unknown, number> = new Map(),
 ): PureIndex {
 	function set(v: unknown): PureIndex {
@@ -44,7 +44,7 @@ export function serializeRecursively<T>(
 	pures.push(null);
 
 	// Create a new `Pure`
-	let pure: SeriallPure;
+	let pure: Pure;
 
 	// Search obj in context values
 	let ctxKey: string | null = null;
@@ -122,8 +122,7 @@ export function serializeRecursively<T>(
 						};
 					} else {
 						// Search `obj.constructor.name` in context adapters
-						let adapter: SeriallAdapter<unknown, unknown> | null =
-							null;
+						let adapter: Adapter<unknown, unknown> | null = null;
 						for (const context of contexts) {
 							if (context.adapters.has(obj.constructor.name)) {
 								adapter = context.adapters
@@ -183,15 +182,15 @@ export function serializeRecursively<T>(
  *
  * @template T Type of deserialized object
  * @param {PureIndex} index - Index of the pure value
- * @param {SeriallPure[]} pures - Array of pure values
- * @param {SeriallContext[]} contexts - Array of contexts
+ * @param {Pure[]} pures - Array of pure values
+ * @param {Context[]} contexts - Array of contexts
  * @param {Map<number, unknown>} [seen=new Map()] - Map of seen objects
  * @returns {T} - Deserialized object
  */
 export function deserializeRecursively<T>(
 	index: PureIndex,
-	pures: SeriallPure[],
-	contexts: SeriallContext[],
+	pures: Pure[],
+	contexts: Context[],
 	seen: Map<number, unknown> = new Map(),
 ): T {
 	function get<V>(id: PureIndex): V {

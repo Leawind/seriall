@@ -1,10 +1,7 @@
 import { assertThrows } from '@std/assert/throws';
 import { assert } from '@std/assert/assert';
-import seriall, {
-	BiMap,
-	type SeriallOptions,
-	SeriallResolveFailedError,
-} from '@/mod.ts';
+
+import * as seriall from '@/mod.ts';
 
 Deno.test(function examples() {
 	console.log(`| Value | Pures | String (JSON Format) |`);
@@ -48,7 +45,7 @@ Deno.test(function tutorial_Simple_Custom_Class() {
 		}
 	}
 
-	const options: SeriallOptions = { values: { Sheep } };
+	const options: seriall.ContextLike = { values: { Sheep } };
 
 	const sheep = new Sheep();
 	const dolly = seriall.deepClone(sheep, options);
@@ -63,7 +60,7 @@ Deno.test(function tutorial_Simple_Custom_Class() {
 });
 
 Deno.test(function tutorial_Many_Types() {
-	const ctx = { values: { BiMap } };
+	const ctx: seriall.ContextLike = { values: { 'BiMap': seriall.BiMap } };
 
 	const object = {
 		simple: [10, 99n, 'str', false, null, undefined],
@@ -71,7 +68,7 @@ Deno.test(function tutorial_Many_Types() {
 		infinite: [NaN, Infinity, -Infinity],
 		builtin_value: [Math, JSON, Function, Object],
 		builtin_adapters: [new Set(), new Map(), new Date()],
-		custom_class: [new BiMap()],
+		custom_class: [new seriall.BiMap()],
 	};
 	const cloned = seriall.parse(seriall.stringify(object, ctx), ctx);
 
@@ -89,7 +86,7 @@ Deno.test(function tutorial_Custom_Class() {
 	// If you don't tell me how to get `Cat`, I won't be able to deserialize `mimi` and make it an instance of `Cat`. Therefore I can't serialize it.
 	assertThrows(
 		() => seriall.purify(mimi),
-		SeriallResolveFailedError,
+		seriall.SeriallResolveFailedError,
 	);
 
 	// Now you told me it's name is Cat, I will remember it
@@ -112,13 +109,13 @@ Deno.test(function tutorial_Custom_Class() {
 	// If you don't tell me how to get `Cat`, I won't be able to deserialize `mimi` and make it an instance of `Cat`. Therefore I can't serialize it.
 	assertThrows(
 		() => seriall.purify(mimi),
-		SeriallResolveFailedError,
+		seriall.SeriallResolveFailedError,
 	);
 
 	// `mini` has a own property `meow`, it is a function.
 	// This function is not provided in `values`, so it does not work.
 	assertThrows(
 		() => seriall.purify(mimi, { values: { Cat } }),
-		SeriallResolveFailedError,
+		seriall.SeriallResolveFailedError,
 	);
 });

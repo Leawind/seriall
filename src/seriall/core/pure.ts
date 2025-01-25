@@ -44,25 +44,25 @@ export enum SpecialPureValue {
  */
 export type PureIndex = number;
 
-export type SeriallPureRaw = string | number | boolean | null;
-export type SeriallPureArray = PureIndex[];
+export type PureRaw = string | number | boolean | null;
+export type PureArray = PureIndex[];
 
-export type SeriallPureSymbol = {
+export type PureSymbol = {
 	[PureKey.Type]: PureType.Symbol;
 	[PureKey.Key]: string;
 };
 
-export type SeriallPureBigint = {
+export type PureBigint = {
 	[PureKey.Type]: PureType.BigInt;
 	[PureKey.Value]: string;
 };
 
-export type SeriallPureSpecial = {
+export type PureSpecial = {
 	[PureKey.Type]: PureType.Special;
 	[PureKey.Value]: SpecialPureValue;
 };
 
-export type SeriallPurePrototype = {
+export type PurePrototype = {
 	[PureKey.Type]: PureType.Prototype;
 	/**
 	 * class
@@ -72,7 +72,7 @@ export type SeriallPurePrototype = {
 	[PureKey.Class]: PureIndex;
 };
 
-export type SeriallPureObject = {
+export type PureObject = {
 	[PureKey.Type]: PureType.Object;
 	/**
 	 * class
@@ -90,7 +90,7 @@ export type SeriallPureObject = {
 	}][];
 };
 
-export type SeriallPureRefValue = {
+export type PureRefValue = {
 	[PureKey.Type]: PureType.RefValue;
 	/**
 	 * key
@@ -99,19 +99,19 @@ export type SeriallPureRefValue = {
 	 */
 	[PureKey.Key]: string;
 };
-export type SeriallPureRefAdapter = {
+export type PureRefAdapter = {
 	[PureKey.Type]: PureType.RefAdapter;
 	[PureKey.Name]: string;
 	[PureKey.Value]: PureIndex;
 };
 
-export type SeriallPure =
-	| SeriallPureRaw
-	| SeriallPureArray
-	| SeriallPureSymbol
-	| SeriallPureBigint
-	| SeriallPureSpecial
-	| SeriallPurePrototype
-	| SeriallPureObject
-	| SeriallPureRefValue
-	| SeriallPureRefAdapter;
+export type Pure =
+	| PureRaw
+	| PureArray
+	| PureSymbol
+	| PureBigint
+	| PureSpecial
+	| PurePrototype
+	| PureObject
+	| PureRefValue
+	| PureRefAdapter;

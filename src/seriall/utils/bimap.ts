@@ -5,7 +5,7 @@
  * @template K - The type of the keys.
  * @template V - The type of the values.
  */
-export default class BiMap<K = unknown, V = unknown> {
+export class BiMap<K = unknown, V = unknown> {
 	private key2value: Map<K, V> = new Map();
 	private value2key: Map<V, K> = new Map();
 

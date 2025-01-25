@@ -4,8 +4,10 @@ import {
 	assertStrictEquals,
 	assertThrows,
 } from '@std/assert';
-import seriall from '@/mod.ts';
-import { BUILTIN_ADAPTERS, BUILTIN_VALUES } from '@/seriall/builtin.ts';
+import * as seriall from '@/mod.ts';
+
+import { BUILTIN_ADAPTERS } from '@/seriall/builtin/adapters.ts';
+import { BUILTIN_VALUES } from '@/seriall/builtin/values.ts';
 import { looksLikeClass } from '@/seriall/utils.ts';
 
 Deno.test(function find() {

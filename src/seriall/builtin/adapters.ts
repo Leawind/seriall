@@ -1,17 +1,14 @@
-import type {
-	SeriallAdapter,
-	SeriallAdapters,
-} from '@/seriall/core/context.ts';
+import type { Adapter, ContextAdapters } from '@/seriall/core/context.ts';
 import type { PureIndex } from '@/seriall/core/pure.ts';
 
-function typed<A, B>(adapter: SeriallAdapter<A, B>) {
+export function typed<A, B>(adapter: Adapter<A, B>) {
 	return adapter;
 }
 
-export const BUILTIN_ADAPTERS: SeriallAdapters = new Map([
+export const BUILTIN_ADAPTERS: ContextAdapters = new Map([
 	// Primitives
 	...[Number, String, Boolean]
-		.map<[string, SeriallAdapter<unknown, unknown>]>((clazz) => [
+		.map<[string, Adapter<unknown, unknown>]>((clazz) => [
 			clazz.name,
 			typed({
 				serialize: (obj: object) => obj.valueOf(),
@@ -163,7 +160,7 @@ export const BUILTIN_ADAPTERS: SeriallAdapters = new Map([
 		Float64Array,
 		BigUint64Array,
 		BigInt64Array,
-	].map<[string, SeriallAdapter<unknown, unknown>]>((clazz) => [
+	].map<[string, Adapter<unknown, unknown>]>((clazz) => [
 		clazz.name,
 		typed({
 			serialize: (obj) => obj.buffer, // instanceof ArrayBuffer
@@ -209,7 +206,7 @@ export const BUILTIN_ADAPTERS: SeriallAdapters = new Map([
 			TypeError,
 			URIError,
 		],
-	].map<[string, SeriallAdapter<unknown, unknown>]>((clazz) => [
+	].map<[string, Adapter<unknown, unknown>]>((clazz) => [
 		clazz.name,
 		typed({
 			serialize: () => {

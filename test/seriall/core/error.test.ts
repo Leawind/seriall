@@ -1,11 +1,12 @@
 import { assertThrows } from '@std/assert/throws';
-import seriall, {
+import {
 	SeriallInvalidPureError,
 	SeriallReferredAdapterNotFoundError,
 	SeriallReferredValueNotFoundError,
 	SeriallResolveFailedError,
-} from '@/mod.ts';
-import type { SeriallPure } from '@/seriall/core/pure.ts';
+} from '@/seriall/core/error.ts';
+import * as seriall from '@/mod.ts';
+import type { Pure } from '@/seriall/core/pure.ts';
 
 Deno.test(function testSeriallResolveFailedError() {
 	assertThrows(
@@ -30,7 +31,7 @@ Deno.test(function testSeriallReferredAdapterNotFoundError() {
 	);
 });
 Deno.test(function testSeriallInvalidPureTypeError() {
-	const pures = [{ type: 'no such type' }] as unknown as SeriallPure[];
+	const pures = [{ type: 'no such type' }] as unknown as Pure[];
 	assertThrows(
 		() => seriall.core.pures2obj(pures, []),
 		SeriallInvalidPureError,

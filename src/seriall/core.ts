@@ -1,5 +1,5 @@
-import type { SeriallContext } from '@/seriall/core/context.ts';
-import type { SeriallPure } from '@/seriall/core/pure.ts';
+import type { Context } from '@/seriall/core/context.ts';
+import type { Pure } from '@/seriall/core/pure.ts';
 
 import {
 	deserializeRecursively,
@@ -15,9 +15,9 @@ import {
  */
 export function obj2pures<T>(
 	obj: T,
-	contexts: SeriallContext[],
-): SeriallPure[] {
-	const pures: SeriallPure[] = [];
+	contexts: Context[],
+): Pure[] {
+	const pures: Pure[] = [];
 	serializeRecursively(obj, pures, contexts);
 	return pures;
 }
@@ -30,8 +30,8 @@ export function obj2pures<T>(
  * @returns The resulting object.
  */
 export function pures2obj<T>(
-	pures: SeriallPure[],
-	contexts: SeriallContext[],
+	pures: Pure[],
+	contexts: Context[],
 ): T {
 	return deserializeRecursively(0, pures, contexts);
 }

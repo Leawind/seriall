@@ -1,4 +1,4 @@
-import { BiMap } from '@/seriall/utils.ts';
+import { BiMap } from '@/seriall/utils/bimap.ts';
 
 export const BUILTIN_VALUES: BiMap<string, unknown> = (() => {
 	const context = new BiMap<string, unknown>();

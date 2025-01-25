@@ -1,8 +1,5 @@
 import { assert, assertStrictEquals, assertThrows } from '@std/assert';
-import seriall, {
-	type SeriallOptions,
-	SeriallResolveFailedError,
-} from '@/mod.ts';
+import * as seriall from '@/mod.ts';
 
 Deno.test(function testRaw() {
 	['Hello world!', 12138, false, true, null]
@@ -24,7 +21,7 @@ Deno.test(function testSymbol() {
 
 	assertThrows(
 		() => seriall.purify(mySymbol),
-		SeriallResolveFailedError,
+		seriall.SeriallResolveFailedError,
 	);
 });
 
@@ -65,7 +62,7 @@ Deno.test(function testArray() {
 
 Deno.test(function testRefValue() {
 	const mySymbol = Symbol('My Symbol');
-	const options: SeriallOptions = { values: { mySymbol } };
+	const options: seriall.ContextLike = { values: { mySymbol } };
 	assertStrictEquals(
 		seriall.stringify(mySymbol, options),
 		seriall.stringify(seriall.deepClone(mySymbol, options), options),
@@ -76,7 +73,7 @@ Deno.test(function testPrototype() {
 	class A {}
 	class B extends A {}
 	class C extends B {}
-	const options: SeriallOptions = { values: { A, B, C } };
+	const options: seriall.ContextLike = { values: { A, B, C } };
 
 	[
 		Function.prototype,
@@ -123,7 +120,7 @@ Deno.test(function testCustomAdapter() {
 		constructor(public value: string) {}
 	}
 
-	const options: SeriallOptions = {
+	const options: seriall.ContextLike = {
 		adapters: {
 			[A.name]: {
 				serialize: (obj: A) => obj.value,

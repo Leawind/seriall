@@ -5,7 +5,6 @@ import {
 	assertThrows,
 } from '@std/assert';
 import {
-	BiMap,
 	clonePureFunction,
 	isGlobalSymbol,
 	looksLikeClass,
@@ -13,17 +12,17 @@ import {
 	symbolToString,
 	withSupers,
 } from '@/seriall/utils.ts';
-import seriall, { SeriallResolveFailedError } from '@/mod.ts';
+import * as seriall from '@/mod.ts';
 
 Deno.test(function testBiMap() {
-	const bm = new BiMap<unknown, unknown>();
+	const bm = new seriall.BiMap<unknown, unknown>();
 
 	// set
 	bm.set('c', 299792458);
 	bm.set('undef', undefined);
 	bm.setAll({
-		'null': null,
-		BiMap,
+		null: null,
+		BiMap: seriall.BiMap,
 	});
 	bm.setMap(
 		new Map([
@@ -47,8 +46,8 @@ Deno.test(function testBiMap() {
 	assertStrictEquals(bm.getValue('null'), null);
 	assertStrictEquals(bm.getKey(null), 'null');
 
-	assertStrictEquals(bm.getValue('BiMap'), BiMap);
-	assertStrictEquals(bm.getKey(BiMap), 'BiMap');
+	assertStrictEquals(bm.getValue('BiMap'), seriall.BiMap);
+	assertStrictEquals(bm.getKey(seriall.BiMap), 'BiMap');
 
 	assertFalse(bm.hasKey(false));
 	assertFalse(bm.hasValue(5432));
@@ -63,9 +62,9 @@ Deno.test(function testBiMap() {
 	assertFalse(bm.hasKey('undefined'));
 	assertFalse(bm.hasValue(undefined));
 
-	bm.deleteValue(BiMap);
+	bm.deleteValue(seriall.BiMap);
 	assertFalse(bm.hasKey('BiMap'));
-	assertFalse(bm.hasValue(BiMap));
+	assertFalse(bm.hasValue(seriall.BiMap));
 });
 
 Deno.test(function testIsGlobalSymbol() {
@@ -229,7 +228,7 @@ Deno.test(function testWithSupers() {
 
 	assertThrows(
 		() => seriall.purify(original, { values: { C } }),
-		SeriallResolveFailedError,
+		seriall.SeriallResolveFailedError,
 	);
 	seriall.purify(original, { values: { A, B, C } });
 	seriall.purify(original, { values: { ...withSupers(C) } });
