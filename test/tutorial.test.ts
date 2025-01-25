@@ -94,7 +94,7 @@ Deno.test(function tutorial_Custom_Class() {
 	console.debug(`mimi: `, pure);
 
 	// I will be able to find `Cat` by name "Cat" when deserializing.
-	const clonedMimi = seriall.parsePures(pure, { palette: { Cat } });
+	const clonedMimi = seriall.parse(pure, { palette: { Cat } });
 	assert(clonedMimi instanceof Cat);
 });
 

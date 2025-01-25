@@ -1,6 +1,11 @@
 import { BiMap } from '@/seriall/utils/bimap.ts';
 import type { ContextPalette } from '@/seriall/core/context.ts';
 
+/**
+ * Palette for built-in global values.
+ *
+ * Include functions and objects.
+ */
 export const BUILTIN_PALETTE: ContextPalette = (() => {
 	const context = new BiMap<string, unknown>();
 

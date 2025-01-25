@@ -14,14 +14,13 @@ import {
 } from '@/seriall/core/error.ts';
 
 import { SpecialPureValue } from '@/seriall/core/pure.ts';
+
 /**
- * Recursively sets a pure value.
- *
  * @template T
- * @param {T} obj - Object to be serialized
- * @param {Pure[]} pures - Array of pure values
- * @param {Context[]} contexts - Array of contexts
- * @param {Map<unknown, number>} [seen=new Map()] - Map of seen objects
+ * @param  obj - Object to be serialized
+ * @param  pures - Array of pure values
+ * @param  contexts - Array of contexts
+ * @param  [seen=new Map()] - Map of seen objects
  * @returns {PureIndex} - Index of the pure value
  */
 export function serializeRecursively<T>(
@@ -178,13 +177,11 @@ export function serializeRecursively<T>(
 }
 
 /**
- * Recursively gets an object from a array of `SeriallPure`.
- *
  * @template T Type of deserialized object
- * @param {PureIndex} index - Index of the pure value
- * @param {Pure[]} pures - Array of pure values
- * @param {Context[]} contexts - Array of contexts
- * @param {Map<number, unknown>} [seen=new Map()] - Map of seen objects
+ * @param index - Index of the pure value
+ * @param pures - Array of pure values
+ * @param contexts - Array of contexts
+ * @param [seen=new Map()] - Map of seen objects
  * @returns {T} - Deserialized object
  */
 export function deserializeRecursively<T>(

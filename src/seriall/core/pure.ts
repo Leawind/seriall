@@ -90,13 +90,11 @@ export type PureObject = {
 	}][];
 };
 
+/**
+ * Refer to a value in the context palette
+ */
 export type PureRefValue = {
 	[PureKey.Type]: PureType.RefValue;
-	/**
-	 * key
-	 *
-	 * value key in the context
-	 */
 	[PureKey.Key]: string;
 };
 export type PureRefAdapter = {

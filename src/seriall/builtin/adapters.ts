@@ -5,6 +5,9 @@ export function typed<A, B>(adapter: Adapter<A, B>) {
 	return adapter;
 }
 
+/**
+ * Adapters for some commonly-used built-in types
+ */
 export const BUILTIN_ADAPTERS: ContextAdapters = new Map([
 	// Primitives
 	...[Number, String, Boolean]
