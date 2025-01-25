@@ -1,13 +1,13 @@
-name: Deno Test
-
+name: Publish
 on:
+  workflow_dispatch:
   push:
-    branches: ["main"]
-  pull_request:
-    branches: ["main"]
+    tags:
+      - "v*"
 
 permissions:
   contents: read
+  id-token: write
 
 jobs:
   test:
@@ -30,3 +30,6 @@ jobs:
 
       - name: Run tests
         run: deno test -A
+
+      - name: Publish package
+        run: deno publish
