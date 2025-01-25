@@ -2,27 +2,27 @@ import type { Context, ContextLike } from '@/seriall/core/context.ts';
 import type { Pure } from '@/seriall/core/pure.ts';
 import { obj2pures, pures2obj } from '@/seriall/core.ts';
 import { BUILTIN_ADAPTERS } from '@/seriall/builtin/adapters.ts';
-import { BUILTIN_VALUES } from '@/seriall/builtin/values.ts';
+import { BUILTIN_PALETTE } from '@/seriall/builtin/palette.ts';
 import { BiMap } from '@/seriall/utils/bimap.ts';
 
 function buildSeriallContext(options: ContextLike): Context {
 	return {
-		values: BiMap.fromRecord(options.values || {}),
+		palette: BiMap.fromRecord(options.palette || {}),
 		adapters: new Map(Object.entries(options.adapters || {})),
 	};
 }
 
 export type SeriallOptions = ContextLike & {
 	contexts?: ContextLike[];
-	builtinValues?: boolean;
+	builtinPalette?: boolean;
 	builtinAdapters?: boolean;
 };
 function parseSeriallOptions(options: SeriallOptions): Context[] {
 	const contexts: Context[] = [];
 
-	if (options.values || options.adapters) {
+	if (options.palette || options.adapters) {
 		contexts.push(buildSeriallContext({
-			values: options.values,
+			palette: options.palette,
 			adapters: options.adapters,
 		}));
 	}
@@ -33,11 +33,11 @@ function parseSeriallOptions(options: SeriallOptions): Context[] {
 		}
 	}
 
-	options.builtinValues = options.builtinValues !== false;
+	options.builtinPalette = options.builtinPalette !== false;
 	options.builtinAdapters = options.builtinAdapters !== false;
-	if (options.builtinValues || options.builtinAdapters) {
+	if (options.builtinPalette || options.builtinAdapters) {
 		contexts.push({
-			values: options.builtinValues ? BUILTIN_VALUES : new BiMap(),
+			palette: options.builtinPalette ? BUILTIN_PALETTE : new BiMap(),
 			adapters: options.builtinAdapters ? BUILTIN_ADAPTERS : new Map(),
 		});
 	}

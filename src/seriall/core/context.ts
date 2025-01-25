@@ -1,6 +1,6 @@
 import type { BiMap } from '@/seriall/utils/bimap.ts';
 
-export type ContextValues = BiMap<string, unknown>;
+export type ContextPalette = BiMap<string, unknown>;
 
 export type Adapter<T, P> = {
 	serialize(obj: T): P;
@@ -9,15 +9,15 @@ export type Adapter<T, P> = {
 export type ContextAdapters = Map<string, Adapter<unknown, unknown>>;
 
 export type Context = {
-	values: ContextValues;
+	palette: ContextPalette;
 	adapters: ContextAdapters;
 };
 
-export type ContextValuesLike = Record<string, unknown>;
+export type ContextPaletteLike = Record<string, unknown>;
 
 export type ContextAdaptersLike = Record<string, Adapter<unknown, unknown>>;
 
 export type ContextLike = {
-	values?: ContextValuesLike;
+	palette?: ContextPaletteLike;
 	adapters?: ContextAdaptersLike;
 };

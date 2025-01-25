@@ -49,8 +49,8 @@ export function serializeRecursively<T>(
 	// Search obj in context values
 	let ctxKey: string | null = null;
 	for (const context of contexts) {
-		if (context.values.hasValue(obj)) {
-			ctxKey = context.values.getKey(obj);
+		if (context.palette.hasValue(obj)) {
+			ctxKey = context.palette.getKey(obj);
 			break;
 		}
 	}
@@ -245,8 +245,8 @@ export function deserializeRecursively<T>(
 					case PureType.RefValue: {
 						// search the key in contexts
 						for (const context of contexts) {
-							if (context.values.hasKey(pure[PureKey.Key])) {
-								result = context.values
+							if (context.palette.hasKey(pure[PureKey.Key])) {
+								result = context.palette
 									.getValue(pure[PureKey.Key]);
 								found = true;
 								break;

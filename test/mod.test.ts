@@ -62,7 +62,7 @@ Deno.test(function testArray() {
 
 Deno.test(function testRefValue() {
 	const mySymbol = Symbol('My Symbol');
-	const options: seriall.ContextLike = { values: { mySymbol } };
+	const options: seriall.ContextLike = { palette: { mySymbol } };
 	assertStrictEquals(
 		seriall.stringify(mySymbol, options),
 		seriall.stringify(seriall.deepClone(mySymbol, options), options),
@@ -73,7 +73,7 @@ Deno.test(function testPrototype() {
 	class A {}
 	class B extends A {}
 	class C extends B {}
-	const options: seriall.ContextLike = { values: { A, B, C } };
+	const options: seriall.ContextLike = { palette: { A, B, C } };
 
 	[
 		Function.prototype,

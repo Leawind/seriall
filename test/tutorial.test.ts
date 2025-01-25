@@ -45,7 +45,7 @@ Deno.test(function tutorial_Simple_Custom_Class() {
 		}
 	}
 
-	const options: seriall.ContextLike = { values: { Sheep } };
+	const options: seriall.ContextLike = { palette: { Sheep } };
 
 	const sheep = new Sheep();
 	const dolly = seriall.deepClone(sheep, options);
@@ -60,7 +60,7 @@ Deno.test(function tutorial_Simple_Custom_Class() {
 });
 
 Deno.test(function tutorial_Many_Types() {
-	const ctx: seriall.ContextLike = { values: { 'BiMap': seriall.BiMap } };
+	const ctx: seriall.ContextLike = { palette: { 'BiMap': seriall.BiMap } };
 
 	const object = {
 		simple: [10, 99n, 'str', false, null, undefined],
@@ -90,11 +90,11 @@ Deno.test(function tutorial_Custom_Class() {
 	);
 
 	// Now you told me it's name is Cat, I will remember it
-	const pure = seriall.purify(mimi, { values: { 'Cat': Cat } });
+	const pure = seriall.purify(mimi, { palette: { 'Cat': Cat } });
 	console.debug(`mimi: `, pure);
 
 	// I will be able to find `Cat` by name "Cat" when deserializing.
-	const clonedMimi = seriall.parsePures(pure, { values: { Cat } });
+	const clonedMimi = seriall.parsePures(pure, { palette: { Cat } });
 	assert(clonedMimi instanceof Cat);
 });
 
@@ -115,7 +115,7 @@ Deno.test(function tutorial_Custom_Class() {
 	// `mini` has a own property `meow`, it is a function.
 	// This function is not provided in `values`, so it does not work.
 	assertThrows(
-		() => seriall.purify(mimi, { values: { Cat } }),
+		() => seriall.purify(mimi, { palette: { Cat } }),
 		seriall.SeriallResolveFailedError,
 	);
 });

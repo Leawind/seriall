@@ -227,14 +227,14 @@ Deno.test(function testWithSupers() {
 	};
 
 	assertThrows(
-		() => seriall.purify(original, { values: { C } }),
+		() => seriall.purify(original, { palette: { C } }),
 		seriall.SeriallResolveFailedError,
 	);
-	seriall.purify(original, { values: { A, B, C } });
-	seriall.purify(original, { values: { ...withSupers(C) } });
-	seriall.purify(original, { values: withSupers(C) });
+	seriall.purify(original, { palette: { A, B, C } });
+	seriall.purify(original, { palette: { ...withSupers(C) } });
+	seriall.purify(original, { palette: withSupers(C) });
 
-	const cloned = seriall.deepClone(original, { values: withSupers(C) });
+	const cloned = seriall.deepClone(original, { palette: withSupers(C) });
 
 	assert(cloned.a instanceof A);
 	assert(cloned.b instanceof B);

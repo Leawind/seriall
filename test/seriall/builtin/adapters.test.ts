@@ -7,7 +7,7 @@ import {
 import * as seriall from '@/mod.ts';
 
 import { BUILTIN_ADAPTERS } from '@/seriall/builtin/adapters.ts';
-import { BUILTIN_VALUES } from '@/seriall/builtin/values.ts';
+import { BUILTIN_PALETTE } from '@/seriall/builtin/palette.ts';
 import { looksLikeClass } from '@/seriall/utils.ts';
 
 Deno.test(function find() {
@@ -20,7 +20,7 @@ Deno.test(function find() {
 		Promise,
 	]);
 	const classes: string[] = [];
-	for (const [name, object] of BUILTIN_VALUES.entries()) {
+	for (const [name, object] of BUILTIN_PALETTE.entries()) {
 		if (!IGNORED.has(object)) {
 			if (looksLikeClass(object) && !BUILTIN_ADAPTERS.has(name)) {
 				classes.push(name);
@@ -272,7 +272,7 @@ Deno.test(function testDataViewInObjectRefValue() {
 		tail: new DataView(buffer, 7, 4),
 	};
 
-	const options = { values: { buffer } };
+	const options: seriall.ContextPaletteLike = { palette: { buffer } };
 
 	const cloned = seriall.deepClone(original, options);
 

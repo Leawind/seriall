@@ -17,7 +17,7 @@ Deno.test(function testSeriallResolveFailedError() {
 Deno.test(function testSeriallReferredValueNotFoundError() {
 	const hey = Symbol('Hey');
 
-	const json = seriall.stringify(hey, { values: { hey } });
+	const json = seriall.stringify(hey, { palette: { hey } });
 	assertThrows(
 		() => seriall.parse(json),
 		SeriallReferredValueNotFoundError,

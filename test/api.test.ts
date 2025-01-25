@@ -5,7 +5,7 @@ Deno.test('test-api', async (t) => {
 		class A {}
 		class B extends A {}
 		const context_ab: seriall.ContextLike = {
-			values: { A, B },
+			palette: { A, B },
 		};
 
 		const b = new B();
@@ -26,7 +26,7 @@ Deno.test('test-api', async (t) => {
 			deserialize: (id) => new C(id),
 		};
 		const context_c: seriall.ContextLike = {
-			values: { C },
+			palette: { C },
 			adapters: { CAdapter },
 		};
 
