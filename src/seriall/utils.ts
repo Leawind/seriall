@@ -8,7 +8,7 @@ export { BiMap };
  * @param  sb - The symbol to check
  * @returns   True if the symbol exists in the global registry, false otherwise
  */
-export function isGlobalSymbol(sb: symbol) {
+export function isGlobalSymbol(sb: symbol): boolean {
 	return Symbol.keyFor(sb) !== undefined;
 }
 

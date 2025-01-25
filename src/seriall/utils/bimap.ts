@@ -28,12 +28,12 @@ export default class BiMap<K = unknown, V = unknown> {
 
 	public assertKey(key: K) {
 		if (!this.hasKey(key)) {
-			throw new BiMap.BiMapNoSuchKeyError(key);
+			throw new BiMapNoSuchKeyError(key);
 		}
 	}
 	public assertValue(value: V) {
 		if (!this.hasValue(value)) {
-			throw new BiMap.BiMapNoSuchValueError(value);
+			throw new BiMapNoSuchValueError(value);
 		}
 	}
 
@@ -85,7 +85,7 @@ export default class BiMap<K = unknown, V = unknown> {
 	 * Returns a value from the BiMap object. If the value that is associated to the provided key is an object, then you will get a reference to that object and any change made to that object will effectively modify it inside the BiMap.
 	 *
 	 * @returns Returns the value associated with the specified key
-	 * @throws {BiMap.BiMapNoSuchKeyError} Error is throwed if no value is associated with the specified key
+	 * @throws {BiMapNoSuchKeyError} Error is throwed if no value is associated with the specified key
 	 */
 	public getValue<v = V>(key: K): v {
 		this.assertKey(key);
@@ -96,7 +96,7 @@ export default class BiMap<K = unknown, V = unknown> {
 	 * Returns a key from the BiMap object. If the key that is associated to the provided value is an object, then you will get a reference to that object and any change made to that object will effectively modify it inside the BiMap.
 	 *
 	 * @returns Returns the key associated with the specified value
-	 * @throws {BiMap.BiMapNoSuchValueError} Error is throwed if no key is associated with the specified value
+	 * @throws {BiMapNoSuchValueError} Error is throwed if no key is associated with the specified value
 	 */
 	public getKey<k = K>(value: V): k {
 		this.assertValue(value);
@@ -149,7 +149,7 @@ export default class BiMap<K = unknown, V = unknown> {
 	 *
 	 * If any pair with the same key or value already exists, they will be removed.
 	 */
-	public setPairs(pairs: [K, V][]) {
+	public setPairs(pairs: [K, V][]): this {
 		for (const [key, value] of pairs) {
 			this.set(key, value);
 		}
@@ -158,9 +158,9 @@ export default class BiMap<K = unknown, V = unknown> {
 
 	public add(key: K, value: V): this {
 		if (this.hasKey(key)) {
-			throw new BiMap.BiMapKeyConflictError(key);
+			throw new BiMapKeyConflictError(key);
 		} else if (this.hasValue(value)) {
-			throw new BiMap.BiMapValueConflictError(value);
+			throw new BiMapValueConflictError(value);
 		}
 		this.key2value.set(key, value);
 		this.value2key.set(value, key);
@@ -181,7 +181,7 @@ export default class BiMap<K = unknown, V = unknown> {
 		return this;
 	}
 
-	public addPairs(pairs: [K, V][]) {
+	public addPairs(pairs: [K, V][]): this {
 		for (const [key, value] of pairs) {
 			this.add(key, value);
 		}
@@ -191,21 +191,21 @@ export default class BiMap<K = unknown, V = unknown> {
 	/**
 	 * Returns an iterable of keys in the map
 	 */
-	public keys() {
+	public keys(): MapIterator<K> {
 		return this.key2value.keys();
 	}
 
 	/**
 	 * Returns an iterable of values in the map
 	 */
-	public values() {
+	public values(): MapIterator<V> {
 		return this.value2key.keys();
 	}
 
 	/**
 	 * Returns an iterable of key, value pairs for every entry in the map.
 	 */
-	public entries() {
+	public entries(): MapIterator<[K, V]> {
 		return this.key2value.entries();
 	}
 
@@ -228,29 +228,31 @@ export default class BiMap<K = unknown, V = unknown> {
 		return cloned;
 	}
 
-	public static fromRecord<V = unknown>(pairs: Record<string, V>) {
+	public static fromRecord<V = unknown>(
+		pairs: Record<string, V>,
+	): BiMap<string, V> {
 		return new BiMap<string, V>().addAll(pairs);
 	}
+}
 
-	public static BiMapError = class extends Error {};
-	public static BiMapNoSuchKeyError = class<K> extends BiMap.BiMapError {
-		constructor(cause: K) {
-			super(`No such key: ${cause}`, { cause });
-		}
-	};
-	public static BiMapNoSuchValueError = class<V> extends BiMap.BiMapError {
-		constructor(cause: V) {
-			super(`No such value: ${cause}`, { cause });
-		}
-	};
-	public static BiMapKeyConflictError = class<K> extends BiMap.BiMapError {
-		constructor(cause: K) {
-			super(`Key already exist: ${cause}`, { cause });
-		}
-	};
-	public static BiMapValueConflictError = class<V> extends BiMap.BiMapError {
-		constructor(cause: V) {
-			super(`Value already exist: ${cause}`, { cause });
-		}
-	};
+export class BiMapError extends Error {}
+export class BiMapNoSuchKeyError<K> extends BiMapError {
+	constructor(cause: K) {
+		super(`No such key: ${cause}`, { cause });
+	}
+}
+export class BiMapNoSuchValueError<V> extends BiMapError {
+	constructor(cause: V) {
+		super(`No such value: ${cause}`, { cause });
+	}
+}
+export class BiMapKeyConflictError<K> extends BiMapError {
+	constructor(cause: K) {
+		super(`Key already exist: ${cause}`, { cause });
+	}
+}
+export class BiMapValueConflictError<V> extends BiMapError {
+	constructor(cause: V) {
+		super(`Value already exist: ${cause}`, { cause });
+	}
 }
