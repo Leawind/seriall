@@ -33,7 +33,45 @@ flowchart LR
 - **Deep cloning capability**
 - **Lightweight & dependency-free**
 
+## Installation
+
+### deno
+
+```bash
+deno add jsr:@leawind/seriall
+```
+
+### npm
+
+```bash
+npx jsr add @leawind/seriall
+```
+
+### yarn
+
+```bash
+yarn dlx jsr add @leawind/seriall
+```
+
+### pnpm
+
+```bash
+pnpm dlx jsr add @leawind/seriall
+```
+
+### bun
+
+```bash
+bunx jsr add @leawind/seriall
+```
+
 ## Usage
+
+Import **seriall**
+
+```bash
+import * as seriall from "@leawind/seriall";
+```
 
 ### Serialize
 
