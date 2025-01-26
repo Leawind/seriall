@@ -84,23 +84,22 @@ export const BUILTIN_ADAPTERS: ContextAdapters = new Map([
 			serialize: (obj: ArrayBuffer) => {
 				const arr = new Uint8Array(obj);
 				const chunkSize = 32768;
-				let bin = '';
+				let bytes = '';
 
 				for (let i = 0; i < arr.length; i += chunkSize) {
 					const chunk = arr.subarray(i, i + chunkSize);
-					bin += String.fromCharCode.apply(
+					bytes += String.fromCharCode.apply(
 						null,
 						chunk as unknown as number[],
 					);
 				}
 
-				return btoa(bin);
+				return bytes;
 			},
 			deserialize: (pure: string) => {
-				const bin = atob(pure);
-				const arr = new Uint8Array(bin.length);
-				for (let i = 0; i < bin.length; i++) {
-					arr[i] = bin.charCodeAt(i);
+				const arr = new Uint8Array(pure.length);
+				for (let i = 0; i < pure.length; i++) {
+					arr[i] = pure.charCodeAt(i);
 				}
 				return arr.buffer;
 			},
