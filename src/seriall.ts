@@ -1,6 +1,8 @@
 import type { Context, ContextLike } from '@/seriall/core/context.ts';
 import type { Pure } from '@/seriall/core/pure.ts';
 import { obj2pures, pures2obj } from '@/seriall/core.ts';
+import * as toml from '@std/toml';
+import * as yaml from '@std/yaml';
 import { BUILTIN_ADAPTERS } from '@/seriall/builtin/adapters.ts';
 import { BUILTIN_PALETTE } from '@/seriall/builtin/palette.ts';
 import { BiMap } from '@/seriall/utils/bimap.ts';
@@ -73,12 +75,23 @@ export function purify<T>(obj: T, options: SeriallOptions = {}): Pure[] {
  * Serialize an object to a JSON string.
  * @param obj - The object to stringify.
  * @param options - Options
- * @returns A JSON string representing the object.
+ * @returns A string representing the object in the specified format.
  */
-export function stringify<T>(obj: T, options: SeriallOptions = {}): string {
+export function stringify<T>(
+	obj: T,
+	options: SeriallOptions & { format?: 'json' | 'toml' | 'yaml' } = {},
+): string {
 	const contexts = parseSeriallOptions(options);
 	const pures = obj2pures(obj, contexts);
-	return JSON.stringify(pures);
+	switch (options.format) {
+		case 'toml':
+			return toml.stringify(pures as unknown as Record<string, unknown>);
+		case 'yaml':
+			return yaml.stringify(pures as unknown as Record<string, unknown>);
+		case 'json':
+		default:
+			return JSON.stringify(pures);
+	}
 }
 
 /**
@@ -99,14 +112,29 @@ export function parse<T>(str: Pure[], options?: SeriallOptions): T;
  * @param options - Options
  * @returns The parsed object.
  */
-export function parse<T>(str: string, options?: SeriallOptions): T;
+export function parse<T>(
+	str: string,
+	options?: SeriallOptions & { format?: 'json' | 'toml' | 'yaml' },
+): T;
 export function parse<T>(
 	arg0: Pure[] | string,
-	options: SeriallOptions = {},
+	options: SeriallOptions & { format?: 'json' | 'toml' | 'yaml' } = {},
 ): T {
 	const contexts = parseSeriallOptions(options);
 	if (typeof arg0 === 'string') {
-		const pures = JSON.parse(arg0);
+		let pures: Pure[];
+		switch (options.format) {
+			case 'toml':
+				pures = toml.parse(arg0) as unknown as Pure[];
+				break;
+			case 'yaml':
+				pures = yaml.parse(arg0) as unknown as Pure[];
+				break;
+			case 'json':
+			default:
+				pures = JSON.parse(arg0) as unknown as Pure[];
+				break;
+		}
 		return pures2obj(pures, contexts);
 	} else {
 		return pures2obj(arg0, contexts);

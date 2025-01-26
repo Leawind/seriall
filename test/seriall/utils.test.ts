@@ -240,3 +240,23 @@ Deno.test(function testWithSupers() {
 	assert(cloned.b instanceof B);
 	assert(cloned.c instanceof C);
 });
+
+Deno.test(function testStringifyAndParse() {
+	const obj = { a: 1, b: 'test', c: [1, 2, 3] };
+
+	// JSON
+	const jsonString = seriall.stringify(obj, { format: 'json' });
+	const parsedJson = seriall.parse(jsonString, { format: 'json' });
+	assertStrictEquals(JSON.stringify(parsedJson), JSON.stringify(obj));
+
+	// TOML
+	const tomlString = seriall.stringify(obj, { format: 'toml' });
+	console.log(tomlString);
+	const parsedToml = seriall.parse(tomlString, { format: 'toml' });
+	assertStrictEquals(JSON.stringify(parsedToml), JSON.stringify(obj));
+
+	// YAML
+	const yamlString = seriall.stringify(obj, { format: 'yaml' });
+	const parsedYaml = seriall.parse(yamlString, { format: 'yaml' });
+	assertStrictEquals(JSON.stringify(parsedYaml), JSON.stringify(obj));
+});
