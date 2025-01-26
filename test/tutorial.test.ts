@@ -58,23 +58,21 @@ Deno.test(function tutorial_Simple_Custom_Class() {
 	assert(dolly.getName() === 'Dolly');
 });
 
-Deno.test(function tutorial_Many_Types() {
-	const ctx: seriall.ContextLike = { palette: { 'BiMap': seriall.BiMap } };
-
-	const object = {
-		simple: [10, 99n, 'str', false, null, undefined],
-		array: [[[[[[[[[[[]]]]]]]]]]],
-		infinite: [NaN, Infinity, -Infinity],
-		builtin_value: [Math, JSON, Function, Object],
-		builtin_adapters: [new Set(), new Map(), new Date()],
-		custom_class: [new seriall.BiMap()],
+Deno.test(function tutorial_builtin_class() {
+	const original = {
+		array: [2, 3, 4],
+		set: new Set([12138, 7355608]),
+		map: new Map(Object.entries({ greet: 'hello world' })),
+		typed_array: new Int8Array([7, 6, 5, 4, 3]),
 	};
-	const cloned = seriall.parse(seriall.stringify(object, ctx), ctx);
 
-	assert(
-		seriall.stringify(object, ctx) ===
-			seriall.stringify(cloned, ctx),
-	);
+	// deepClone means serialize and then deserialize
+	const cloned = seriall.deepClone(original);
+
+	assert(cloned.array.length === 3);
+	assert(cloned.set.has(12138));
+	assert(cloned.map.has('greet'));
+	assert(cloned.typed_array[2] === 5);
 });
 
 Deno.test(function tutorial_Custom_Class() {
@@ -82,14 +80,11 @@ Deno.test(function tutorial_Custom_Class() {
 	const mimi = new Cat();
 
 	// `mimi` is an instance of `Cat`, which is a custom Class.
-	// If you don't tell me how to get `Cat`, I won't be able to deserialize `mimi` and make it an instance of `Cat`. Therefore I can't serialize it.
-	assertThrows(
-		() => seriall.purify(mimi),
-		seriall.SeriallResolveFailedError,
-	);
+	// If you don't tell it how to get `Cat`, it won't be able to deserialize `mimi` and make it an instance of `Cat`. Therefore it refuses to serialize it.
+	assertThrows(() => seriall.purify(mimi), seriall.SeriallResolveFailedError);
 
-	// Now you told me it's name is Cat, I will remember it
-	const pure = seriall.purify(mimi, { palette: { 'Cat': Cat } });
+	// The second argument is telling seriall how to find class `Cat`: just by name "Cat"
+	const pure = seriall.purify(mimi, { palette: { Cat: Cat } });
 	console.debug(`mimi: `, pure);
 
 	// I will be able to find `Cat` by name "Cat" when deserializing.

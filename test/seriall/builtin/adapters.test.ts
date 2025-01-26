@@ -77,13 +77,13 @@ Deno.test(function testMap() {
 	const original = new Map<unknown, unknown>([
 		['name', 'Steve'],
 		['pos', [-2, 64, 1.23]],
-		['effect', new Set()],
+		['set', new Set()],
 	]);
 	const cloned = seriall.deepClone(original);
 
 	assertStrictEquals(cloned.get('name'), 'Steve');
 	assert((cloned.get('pos') as number[])[2] === 1.23);
-	assert(cloned.get('effect') instanceof Set);
+	assert(cloned.get('set') instanceof Set);
 });
 
 Deno.test(function testRegExp() {

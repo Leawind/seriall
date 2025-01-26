@@ -81,47 +81,40 @@ assert(alice.name === dolly.name);
 ### Instance of bulit-in Class
 
 ```typescript
-const original = new Map<unknown, unknown>([
-	['name', 'Steve'],
-	['effect', new Set()],
-	['pos', [-2, 64, 1.23]],
-]);
+const original = {
+	array: [2, 3, 4],
+	set: new Set([12138, 7355608]),
+	map: new Map(Object.entries({ greet: 'hello world' })),
+	typed_array: new Int8Array([7, 6, 5, 4, 3]),
+};
+
 // deepClone means serialize and then deserialize
 const cloned = seriall.deepClone(original);
 
-assertStrictEquals(cloned.get('name'), 'Steve');
-assert(cloned.get('effect') instanceof Set);
-assert((cloned.get('pos') as number[])[2] === 1.23);
+assert(cloned.array.length === 3);
+assert(cloned.set.has(12138));
+assert(cloned.map.has('greet'));
+assert(cloned.typed_array[2] === 5);
 ```
 
 ### Instance of custom Class
 
 ```ts
-class Sheep {
-	private name?: string;
-	public constructor(name?: string) {
-		this.name = name;
-	}
-	public setName(name: string) {
-		this.name = name;
-	}
-	public getName(): string | undefined {
-		return this.name;
-	}
-}
+class Cat {}
+const mimi = new Cat();
 
-const options: SeriallOptions = { values: { Sheep } };
+// `mimi` is an instance of `Cat`, which is a custom Class.
+// If you don't tell it how to get `Cat`, it won't be able to deserialize `mimi` and make it an instance of `Cat`. Therefore it refuses to serialize it.
+assertThrows(() => seriall.purify(mimi), seriall.SeriallResolveFailedError);
 
-const sheep = new Sheep();
-const dolly = seriall.deepClone(sheep, options);
+// The second argument is telling seriall how to find class `Cat`: just by name "Cat"
+const pure = seriall.purify(mimi, { palette: { Cat: Cat } });
+console.debug(`mimi: `, pure);
+// Output:  [ { T: 6, C: 1, P: [] }, { T: 7, K: "Cat" } ]
 
-assert(sheep instanceof Sheep);
-assert(dolly instanceof Sheep);
-assert(sheep !== dolly);
-assert(sheep.constructor === dolly.constructor);
-
-dolly.setName('Dolly');
-assert(dolly.getName() === 'Dolly');
+// It will be able to find constructor `Cat` and its prototype object by name "Cat" when deserializing.
+const clonedMimi = seriall.parse(pure, { palette: { Cat } });
+assert(clonedMimi instanceof Cat);
 ```
 
 ## Builtin adapters
