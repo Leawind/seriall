@@ -2,6 +2,7 @@
 
 ![GitHub License](https://img.shields.io/github/license/Leawind/seriall)
 ![JSR Version](https://img.shields.io/jsr/v/%40leawind/seriall?logo=JSR)
+![deno doc](https://doc.deno.land/badge.svg)
 ![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/Leawind/seriall/deno-test.yaml?branch=main&logo=github-actions&label=test)
 
 **Seriall** is s simple serialization library for JavaScript / TypeScript, supports circular references and built-in types
