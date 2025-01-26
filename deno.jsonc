@@ -4,7 +4,8 @@
 	"license": "GPLv3",
 	"exports": "./src/mod.ts",
 	"tasks": {
-		"dev": "deno test --watch --parallel"
+		"dev": "deno test --watch --parallel",
+		"prepare": "deno fmt && deno lint && deno test -A"
 	},
 	"test": {
 		"include": [
