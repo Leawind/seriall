@@ -71,6 +71,8 @@ export function purify<T>(obj: T, options: SeriallOptions = {}): Pure[] {
 	return obj2pures(obj, contexts);
 }
 
+export type StringifyFormatOptions = { format: 'json' | 'toml' | 'yaml' };
+
 /**
  * Serialize an object to a JSON string.
  * @param obj - The object to stringify.
@@ -79,7 +81,7 @@ export function purify<T>(obj: T, options: SeriallOptions = {}): Pure[] {
  */
 export function stringify<T>(
 	obj: T,
-	options: SeriallOptions & { format?: 'json' | 'toml' | 'yaml' } = {},
+	options: SeriallOptions & Partial<StringifyFormatOptions> = {},
 ): string {
 	const contexts = parseSeriallOptions(options);
 	const pures = obj2pures(obj, contexts);
@@ -114,11 +116,11 @@ export function parse<T>(str: Pure[], options?: SeriallOptions): T;
  */
 export function parse<T>(
 	str: string,
-	options?: SeriallOptions & { format?: 'json' | 'toml' | 'yaml' },
+	options?: SeriallOptions & Partial<StringifyFormatOptions>,
 ): T;
 export function parse<T>(
 	arg0: Pure[] | string,
-	options: SeriallOptions & { format?: 'json' | 'toml' | 'yaml' } = {},
+	options: SeriallOptions & Partial<StringifyFormatOptions> = {},
 ): T {
 	const contexts = parseSeriallOptions(options);
 	if (typeof arg0 === 'string') {
