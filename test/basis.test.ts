@@ -1,6 +1,6 @@
 import { assertStrictEquals, assertThrows } from '@std/assert';
 
-Deno.test(function basicTest() {
+Deno.test('Dog class name manipulation', () => {
 	class Dog {
 		private name: string;
 		constructor(name: string) {
@@ -29,7 +29,7 @@ Deno.test(function basicTest() {
 	assertStrictEquals(wangcai.getName(), cloned.getName());
 });
 
-Deno.test(function nativeTest() {
+Deno.test('Set prototype method call on incompatible receiver', () => {
 	const fakeSet = Object.create(Set.prototype);
 
 	// `TypeError: Method Set.prototype.add called on incompatible receiver #<Set>`

@@ -1,16 +1,10 @@
-import {
-	assert,
-	assertFalse,
-	assertStrictEquals,
-	assertThrows,
-} from '@std/assert';
-import * as seriall from '@/mod.ts';
+import { assert, assertFalse, assertStrictEquals, assertThrows } from '@std/assert';
+import { seriall_sync as seriall } from '@/index.ts';
 
-import { BUILTIN_ADAPTERS } from '@/seriall/builtin/adapters.ts';
 import { BUILTIN_PALETTE } from '@/seriall/builtin/palette.ts';
 import { looksLikeClass } from '@/seriall/utils.ts';
 
-Deno.test(function find() {
+Deno.test('Find classes without adapters in BUILTIN_PALETTE', () => {
 	const IGNORED = new Set<unknown>([
 		Array,
 		Function,
@@ -22,7 +16,7 @@ Deno.test(function find() {
 	const classes: string[] = [];
 	for (const [name, object] of BUILTIN_PALETTE.entries()) {
 		if (!IGNORED.has(object)) {
-			if (looksLikeClass(object) && !BUILTIN_ADAPTERS.has(name)) {
+			if (looksLikeClass(object) && !seriall.BUILTIN_ADAPTERS.has(name)) {
 				classes.push(name);
 			}
 		}
@@ -31,26 +25,26 @@ Deno.test(function find() {
 	console.log(classes.join(', '));
 });
 
-Deno.test(function testNumber() {
+Deno.test('Deep clone Number object', () => {
 	const original = new Number(12138);
 	const cloned = seriall.deepClone<typeof original>(original);
 	assert(cloned instanceof Number);
 	assertStrictEquals(original.toString(), cloned.toString());
 });
-Deno.test(function testBoolean() {
+Deno.test('Deep clone Boolean object', () => {
 	const original = new Boolean(12138);
 	const cloned = seriall.deepClone<typeof original>(original);
 	assert(cloned instanceof Boolean);
 	assertStrictEquals(original.toString(), cloned.toString());
 });
-Deno.test(function testString() {
+Deno.test('Deep clone String object', () => {
 	const original = new String('Hello world!');
 	const cloned = seriall.deepClone<typeof original>(original);
 	assert(cloned instanceof String);
 	assertStrictEquals(original.toString(), cloned.toString());
 });
 
-Deno.test(function testDate() {
+Deno.test('Deep clone Date object', () => {
 	const dates = {
 		guoqing: new Date(`1949-10-1`),
 		now: new Date(),
@@ -62,7 +56,7 @@ Deno.test(function testDate() {
 	);
 });
 
-Deno.test(function testSet() {
+Deno.test('Deep clone Set object', () => {
 	const original = new Set([2, 'str', 5, 7, 9]);
 	console.log(seriall.purify(original));
 	const cloned = seriall.deepClone(original);
@@ -73,7 +67,7 @@ Deno.test(function testSet() {
 	assertFalse(cloned.has(1));
 });
 
-Deno.test(function testMap() {
+Deno.test('Deep clone Map object', () => {
 	const original = new Map<unknown, unknown>([
 		['name', 'Steve'],
 		['pos', [-2, 64, 1.23]],
@@ -86,7 +80,7 @@ Deno.test(function testMap() {
 	assert(cloned.get('set') instanceof Set);
 });
 
-Deno.test(function testRegExp() {
+Deno.test('Deep clone RegExp object', () => {
 	const original = {
 		email: /^\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b$/,
 		telephone: /^\b1[3-9]\d{9}\b$/,
@@ -104,7 +98,7 @@ Deno.test(function testRegExp() {
 	);
 });
 
-Deno.test(function testURL() {
+Deno.test('Deep clone URL object', () => {
 	const url = new URL(
 		'proto://alice:123456@subdomain.domain/path/to/resource?search=中文&password=213#header',
 	);
@@ -121,7 +115,7 @@ Deno.test(function testURL() {
 	assertStrictEquals(url.hash, cloned.hash);
 });
 
-Deno.test(function testURLPattern() {
+Deno.test('Deep clone URLPattern object', () => {
 	const pattern = new URLPattern({
 		protocol: 'https',
 		hostname: 'example.com',
@@ -138,7 +132,7 @@ Deno.test(function testURLPattern() {
 	);
 });
 
-Deno.test(function testArrayBufferInObject() {
+Deno.test('Deep clone ArrayBuffer in object', () => {
 	const original = {
 		id: 'binary-data',
 		meta: new Map([['size', 3]]),
@@ -156,13 +150,13 @@ Deno.test(function testArrayBufferInObject() {
 	}
 });
 
-Deno.test(function testArrayBuffer_Empty() {
+Deno.test('Deep clone empty ArrayBuffer', () => {
 	const original = new ArrayBuffer(0);
 	const cloned = seriall.deepClone(original);
 	assertStrictEquals(cloned.byteLength, 0);
 });
 
-Deno.test(function testTypedArray() {
+Deno.test('Deep clone TypedArray objects', () => {
 	[
 		...[Uint8ClampedArray, Uint8Array, Int8Array],
 		...[Uint16Array, Int16Array, Float16Array],
@@ -193,7 +187,7 @@ Deno.test(function testTypedArray() {
 	});
 });
 
-Deno.test(function testLongTypedArray() {
+Deno.test('Deep clone long TypedArray objects', () => {
 	[
 		...[Uint8ClampedArray, Uint8Array, Int8Array],
 		...[Uint16Array, Int16Array, Float16Array],
@@ -211,7 +205,7 @@ Deno.test(function testLongTypedArray() {
 	});
 });
 
-Deno.test(function testBigUint64Array() {
+Deno.test('Deep clone BigUint64Array and BigInt64Array objects', () => {
 	[BigUint64Array, BigInt64Array]
 		.forEach((clazz) => {
 			const original = new clazz([
@@ -228,7 +222,7 @@ Deno.test(function testBigUint64Array() {
 		});
 });
 
-Deno.test(function testDataView() {
+Deno.test('Deep clone DataView object', () => {
 	const buffer = new Uint8Array([0, 1, 2, 3, 4, 5, 6, 7]).buffer;
 
 	const original = new DataView(buffer, 2, 4);
@@ -246,9 +240,8 @@ Deno.test(function testDataView() {
 	}
 });
 
-Deno.test(function testDataViewInObject() {
-	const buffer =
-		new Uint8Array([10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]).buffer;
+Deno.test('Deep clone DataView in object', () => {
+	const buffer = new Uint8Array([10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]).buffer;
 
 	const original = {
 		head: new DataView(buffer, 0, 4),
@@ -263,9 +256,8 @@ Deno.test(function testDataViewInObject() {
 	);
 });
 
-Deno.test(function testDataViewInObjectRefValue() {
-	const buffer =
-		new Uint8Array([10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]).buffer;
+Deno.test('Deep clone DataView in object with reference value', () => {
+	const buffer = new Uint8Array([10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]).buffer;
 
 	const original = {
 		head: new DataView(buffer, 0, 4),
@@ -286,7 +278,7 @@ Deno.test(function testDataViewInObjectRefValue() {
 	assertStrictEquals(original.tail.getInt8(0), 77);
 });
 
-Deno.test(function testUnserializable() {
+Deno.test('Purify unserializable objects', () => {
 	assertThrows(
 		() => seriall.purify(new WeakMap()),
 		Error,
@@ -301,7 +293,7 @@ Deno.test(function testUnserializable() {
 	);
 });
 
-Deno.test(function testURLSearchParams() {
+Deno.test('Deep clone URLSearchParams object', () => {
 	[
 		new URLSearchParams('a=1&b=&c=hello%20world'),
 		new URLSearchParams('a=1&a=2&a=3'),
@@ -317,7 +309,7 @@ Deno.test(function testURLSearchParams() {
 	});
 });
 
-Deno.test(function testURLSearchParamsSorting() {
+Deno.test('Deep clone URLSearchParams with sorting', () => {
 	const orderedParams = new URLSearchParams();
 	orderedParams.append('z', '3');
 	orderedParams.append('a', '1');
@@ -328,7 +320,7 @@ Deno.test(function testURLSearchParamsSorting() {
 	assertStrictEquals([...cloned.keys()].join(','), 'z,a,m');
 });
 
-Deno.test(function testByteLengthQueuingStrategy() {
+Deno.test('Deep clone ByteLengthQueuingStrategy object', () => {
 	const original = new ByteLengthQueuingStrategy({ highWaterMark: 1024 });
 	const cloned = seriall.deepClone(original);
 
@@ -340,7 +332,7 @@ Deno.test(function testByteLengthQueuingStrategy() {
 		cloned.size(testChunk),
 	);
 });
-Deno.test(function testImageDataBasic() {
+Deno.test('Deep clone basic ImageData object', () => {
 	const data = new Uint8ClampedArray([
 		...[255, 0, 0, 255],
 		...[0, 255, 0, 255],
@@ -358,7 +350,7 @@ Deno.test(function testImageDataBasic() {
 	}
 });
 
-Deno.test(function testLargeImageData() {
+Deno.test('Deep clone large ImageData object', () => {
 	const SIZE = 1024;
 	const data = new Uint8ClampedArray(SIZE * SIZE * 4);
 	for (let i = 0; i < data.length; i += 4) {
@@ -378,7 +370,7 @@ Deno.test(function testLargeImageData() {
 		assertStrictEquals(original.data[i + 3], cloned.data[i + 3]);
 	}
 });
-Deno.test(function testHeadersBasic() {
+Deno.test('Deep clone basic Headers object', () => {
 	const original = new Headers();
 	original.set('Content-Type', 'application/json');
 	original.append('Accept', 'text/html');

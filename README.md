@@ -1,9 +1,9 @@
 # Seriall
 
-![GitHub License](https://img.shields.io/github/license/Leawind/seriall)
-![JSR Version](https://img.shields.io/jsr/v/%40leawind/seriall?logo=JSR)
-![deno doc](https://doc.deno.land/badge.svg)
-![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/Leawind/seriall/deno-test.yaml?branch=main&logo=github-actions&label=test)
+[![GitHub License](https://img.shields.io/github/license/Leawind/seriall)]()
+[![JSR Version](https://img.shields.io/jsr/v/%40leawind/seriall?logo=JSR)](https://jsr.io/@leawind/seriall)
+[![deno doc](https://doc.deno.land/badge.svg)](https://jsr.io/@leawind/seriall)
+[![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/Leawind/seriall/deno-test.yaml?branch=main&logo=github-actions&label=test)](https://github.com/Leawind/seriall/actions/workflows/deno-test.yaml)
 
 **Seriall** is s simple serialization library for JavaScript / TypeScript, supports circular references and built-in types
 
@@ -39,8 +39,8 @@
 
 Import **seriall**
 
-```bash
-import * as seriall from "@leawind/seriall";
+```ts
+import { seriall_sync as seriall } from '@leawind/seriall';
 ```
 
 ### Serialize
@@ -111,7 +111,7 @@ assertThrows(() => seriall.purify(mimi), seriall.SeriallResolveFailedError);
 // The second argument is telling seriall how to find class `Cat`: just by name "Cat"
 const pure = seriall.purify(mimi, { palette: { Cat: Cat } });
 console.debug(`mimi: `, pure);
-// Output:  [ { T: 6, C: 1, P: [] }, { T: 7, K: "Cat" } ]
+// Output:  [ { T: 6, C: 1, P: [] }, { T: 7, K:"Cat" } ]
 
 // It will be able to find constructor `Cat` and its prototype object by name "Cat" when deserializing.
 const clonedMimi = seriall.parse(pure, { palette: { Cat } });

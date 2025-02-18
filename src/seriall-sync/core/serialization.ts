@@ -1,19 +1,13 @@
-import type { Adapter, Context } from '@/seriall/core/context.ts';
-import {
-	type Pure,
-	type PureIndex,
-	PureKey,
-	PureType,
-} from '@/seriall/core/pure.ts';
+import { type Pure, type PureIndex, PureKey, PureType, SpecialPureValue } from '@/seriall/core/pure.ts';
 import { isGlobalSymbol, looksLikePrototype } from '@/seriall/utils.ts';
+
+import type { AdapterSync, ContextSync } from '@/seriall-sync/core/context.ts';
 import {
 	SeriallInvalidPureError,
 	SeriallReferredAdapterNotFoundError,
 	SeriallReferredValueNotFoundError,
 	SeriallResolveFailedError,
 } from '@/seriall/core/error.ts';
-
-import { SpecialPureValue } from '@/seriall/core/pure.ts';
 
 /**
  * @template T
@@ -23,22 +17,23 @@ import { SpecialPureValue } from '@/seriall/core/pure.ts';
  * @param  [seen=new Map()] - Map of seen objects
  * @returns {PureIndex} - Index of the pure value
  */
-export function serializeRecursively<T>(
+export function serializeRecursivelySync<T>(
 	obj: T,
 	pures: Pure[],
-	contexts: Context[],
+	contexts: ContextSync[],
 	seen: Map<unknown, number> = new Map(),
 ): PureIndex {
 	function set(v: unknown): PureIndex {
-		return serializeRecursively(v, pures, contexts, seen);
+		return serializeRecursivelySync(v, pures, contexts, seen);
 	}
 
 	// Search obj in map. If `obj` is already in `pures`, just return its index
-	if (seen.has(obj)) {
-		return seen.get(obj)!;
+	let index = seen.get(obj);
+	if (index !== undefined) {
+		return index;
 	}
 
-	const index = pures.length;
+	index = pures.length;
 	seen.set(obj, index);
 	pures.push(null);
 
@@ -102,6 +97,7 @@ export function serializeRecursively<T>(
 				if (isGlobalSymbol(obj)) {
 					pure = {
 						[PureKey.Type]: PureType.Symbol,
+						// the description of Global Symbol is never undefined
 						[PureKey.Key]: obj.description!,
 					};
 					break;
@@ -121,14 +117,14 @@ export function serializeRecursively<T>(
 						};
 					} else {
 						// Search `obj.constructor.name` in context adapters
-						let adapter: Adapter<unknown, unknown> | null = null;
+						let adapter: AdapterSync<unknown, unknown> | undefined;
 						for (const context of contexts) {
-							if (context.adapters.has(obj.constructor.name)) {
-								adapter = context.adapters
-									.get(obj.constructor.name)!;
+							adapter = context.adapters.get(obj.constructor.name);
+							if (adapter !== undefined) {
+								break;
 							}
 						}
-						if (adapter !== null) {
+						if (adapter !== undefined) {
 							// Found a matched adapter, use that adapter to serialize `obj`
 							pure = {
 								[PureKey.Type]: PureType.RefAdapter,
@@ -146,21 +142,16 @@ export function serializeRecursively<T>(
 								[PureKey.Class]: set(obj.constructor),
 								[PureKey.Properties]: [],
 							};
-							for (
-								const name of Object.getOwnPropertyNames(obj)
-							) {
+							for (const name of Object.getOwnPropertyNames(obj)) {
 								const desc = Object
 									.getOwnPropertyDescriptor(obj, name)!;
 								pure[PureKey.Properties].push([
 									name,
 									set(desc.value),
 									{
-										...(desc.writable === false &&
-											{ [PureKey.Writable]: false }),
-										...(desc.enumerable === false &&
-											{ [PureKey.Enumerable]: false }),
-										...(desc.configurable === false &&
-											{ [PureKey.Configurable]: false }),
+										...(desc.writable === false && { [PureKey.Writable]: false }),
+										...(desc.enumerable === false && { [PureKey.Enumerable]: false }),
+										...(desc.configurable === false && { [PureKey.Configurable]: false }),
 									},
 								]);
 							}
@@ -184,14 +175,14 @@ export function serializeRecursively<T>(
  * @param [seen=new Map()] - Map of seen objects
  * @returns {T} - Deserialized object
  */
-export function deserializeRecursively<T>(
+export function deserializeRecursivelySync<T>(
 	index: PureIndex,
 	pures: Pure[],
-	contexts: Context[],
+	contexts: ContextSync[],
 	seen: Map<number, unknown> = new Map(),
 ): T {
 	function get<V>(id: PureIndex): V {
-		return deserializeRecursively<V>(id, pures, contexts, seen);
+		return deserializeRecursivelySync<V>(id, pures, contexts, seen);
 	}
 
 	if (seen.has(index)) {
@@ -200,7 +191,6 @@ export function deserializeRecursively<T>(
 
 	const pure = pures[index];
 	let result: T;
-	let found = false;
 
 	switch (typeof pure) {
 		case 'string':
@@ -214,6 +204,7 @@ export function deserializeRecursively<T>(
 			} else if (Array.isArray(pure)) {
 				result = pure.map(get) as T;
 			} else {
+				typeSwitch:
 				switch (pure[PureKey.Type]) {
 					case PureType.Symbol:
 						result = Symbol.for(pure[PureKey.Key]) as T;
@@ -243,70 +234,46 @@ export function deserializeRecursively<T>(
 						// search the key in contexts
 						for (const context of contexts) {
 							if (context.palette.hasKey(pure[PureKey.Key])) {
-								result = context.palette
-									.getValue(pure[PureKey.Key]);
-								found = true;
-								break;
+								result = context.palette.getValue(pure[PureKey.Key]);
+								break typeSwitch;
 							}
 						}
-						if (found) {
-							break;
-						} else {
-							throw new SeriallReferredValueNotFoundError(pure);
-						}
+						throw new SeriallReferredValueNotFoundError(pure);
 					}
 					case PureType.RefAdapter: {
 						// search the adapter by its name in contexts
 						for (const context of contexts) {
-							if (context.adapters.has(pure[PureKey.Name])) {
-								found = true;
-								result = context.adapters
-									.get(pure[PureKey.Name])!
-									.deserialize(get(pure[PureKey.Value])) as T;
-								break;
+							const adapter = context.adapters.get(pure[PureKey.Name]);
+							if (adapter) {
+								result = adapter.deserialize(get(pure[PureKey.Value])) as T;
+								break typeSwitch;
 							}
 						}
-						if (found) {
-							break;
-						} else {
-							throw new SeriallReferredAdapterNotFoundError(pure);
-						}
+						throw new SeriallReferredAdapterNotFoundError(pure);
 					}
 					case PureType.Prototype:
-						result = (get(pure[PureKey.Class]) as { prototype: T })
-							.prototype;
+						result = (get(pure[PureKey.Class]) as { prototype: T }).prototype;
 						break;
 					case PureType.Object: {
-						const obj = Object.create(
-							get<{ prototype: object }>(pure[PureKey.Class])
-								.prototype,
-						);
+						const obj = Object.create(get<{ prototype: object }>(pure[PureKey.Class]).prototype);
 						result = obj as T;
 						seen.set(index, result);
-						for (
-							const [key, valueIndex, desc]
-								of pure[PureKey.Properties]
-						) {
+						for (const [key, valueIndex, desc] of pure[PureKey.Properties]) {
 							Object.defineProperty(
 								obj,
 								key,
 								{
 									value: get(valueIndex),
-									enumerable:
-										desc[PureKey.Enumerable] !== false,
+									enumerable: desc[PureKey.Enumerable] !== false,
 									writable: desc[PureKey.Writable] !== false,
-									configurable:
-										desc[PureKey.Configurable] !== false,
+									configurable: desc[PureKey.Configurable] !== false,
 								},
 							);
 						}
 						break;
 					}
 					default:
-						throw new SeriallInvalidPureError(
-							pure,
-							`Unrecognized type: ${pure[PureKey.Type]}`,
-						);
+						throw new SeriallInvalidPureError(pure, `Unrecognized type: ${pure[PureKey.Type]}`);
 				}
 			}
 			break;
@@ -314,6 +281,6 @@ export function deserializeRecursively<T>(
 			throw new Error(`Invalid pure value type: ${typeof pure}`);
 	}
 
-	seen.set(index, result!);
-	return result!;
+	seen.set(index, result);
+	return result;
 }

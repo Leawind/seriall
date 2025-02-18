@@ -18,6 +18,7 @@ export enum PureType {
 	 */
 	RefAdapter,
 }
+
 export enum PureKey {
 	Type = 'T',
 	Value = 'V',
@@ -32,6 +33,7 @@ export enum PureKey {
 	Enumerable = 'E',
 	Configurable = 'C',
 }
+
 export enum SpecialPureValue {
 	Undefined,
 	Nan,

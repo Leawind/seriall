@@ -1,4 +1,4 @@
-import { BiMap } from '@/seriall/utils/bimap.ts';
+import { BiMap } from '@leawind/bimap';
 import type { ContextPalette } from '@/seriall/core/context.ts';
 
 /**
@@ -9,17 +9,19 @@ import type { ContextPalette } from '@/seriall/core/context.ts';
 export const BUILTIN_PALETTE: ContextPalette = (() => {
 	const context = new BiMap<string, unknown>();
 
+	// Get global properties
 	const globalProps = new Function('return this')();
-	const globalPropPairs = Object
+
+	const globalPropPairs: [string, unknown][] = Object
 		.getOwnPropertyNames(globalProps)
-		.map<[string, unknown]>((name) => [name, globalProps[name]])
-		.filter(([_, value]) =>
+		.map<[string, unknown]>((key) => [key, globalProps[key]])
+		.filter(([_key, value]) =>
 			(typeof value === 'function') ||
 			(typeof value === 'object' && value !== null)
 		);
 
 	return context
-		.setPairs(globalPropPairs)
+		.setAll(globalPropPairs)
 		// This is special.
 		// Different from other prototypes, `typeof Function.prototype` is `'function'`
 		// Refer to [Function.prototype is a function](https://stackoverflow.com/questions/32928810/function-prototype-is-a-function)

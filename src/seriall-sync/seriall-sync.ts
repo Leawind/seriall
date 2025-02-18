@@ -1,15 +1,18 @@
-import type { Context, ContextLike } from '@/seriall/core/context.ts';
-import type { Pure } from '@/seriall/core/pure.ts';
-import { obj2pures, pures2obj } from '@/seriall/core.ts';
 import * as toml from '@std/toml';
 import * as yaml from '@std/yaml';
-import { BUILTIN_ADAPTERS } from '@/seriall/builtin/adapters.ts';
-import { BUILTIN_PALETTE } from '@/seriall/builtin/palette.ts';
-import { BiMap } from '@/seriall/utils/bimap.ts';
+import { BiMap } from '@leawind/bimap';
 
-function buildSeriallContext(options: ContextLike): Context {
+import type { Pure } from '@/seriall/core/pure.ts';
+import { BUILTIN_PALETTE } from '@/seriall/builtin/palette.ts';
+import type { StringifyFormatOptions } from '@/seriall/utils.ts';
+
+import type { ContextSync, ContextSyncLike } from '@/seriall-sync/core/context.ts';
+import { BUILTIN_ADAPTERS_SYNC } from '@/seriall-sync/builtin/adapters.ts';
+import { obj2puresSync, pures2objSync } from '@/seriall-sync/core/core.ts';
+
+function buildSeriallContextSync(options: ContextSyncLike): ContextSync {
 	return {
-		palette: BiMap.fromRecord(options.palette || {}),
+		palette: BiMap.from(options.palette || {}),
 		adapters: new Map(Object.entries(options.adapters || {})),
 	};
 }
@@ -23,17 +26,17 @@ function buildSeriallContext(options: ContextLike): Context {
  * @property builtinPalette - Whether to include built-in global references (default: true)
  * @property builtinAdapters - Whether to include built-in type adapters (default: true)
  */
-export type SeriallOptions = ContextLike & {
-	contexts?: ContextLike[];
+export type SeriallOptionsSync = ContextSyncLike & {
+	contexts?: ContextSyncLike[];
 	builtinPalette?: boolean;
 	builtinAdapters?: boolean;
 };
 
-function parseSeriallOptions(options: SeriallOptions): Context[] {
-	const contexts: Context[] = [];
+function parseSeriallOptionsSync(options: SeriallOptionsSync): ContextSync[] {
+	const contexts: ContextSync[] = [];
 
 	if (options.palette || options.adapters) {
-		contexts.push(buildSeriallContext({
+		contexts.push(buildSeriallContextSync({
 			palette: options.palette,
 			adapters: options.adapters,
 		}));
@@ -41,7 +44,7 @@ function parseSeriallOptions(options: SeriallOptions): Context[] {
 
 	if (options.contexts) {
 		for (const ctx of options.contexts) {
-			contexts.push(buildSeriallContext(ctx));
+			contexts.push(buildSeriallContextSync(ctx));
 		}
 	}
 
@@ -50,7 +53,7 @@ function parseSeriallOptions(options: SeriallOptions): Context[] {
 	if (options.builtinPalette || options.builtinAdapters) {
 		contexts.push({
 			palette: options.builtinPalette ? BUILTIN_PALETTE : new BiMap(),
-			adapters: options.builtinAdapters ? BUILTIN_ADAPTERS : new Map(),
+			adapters: options.builtinAdapters ? BUILTIN_ADAPTERS_SYNC : new Map(),
 		});
 	}
 
@@ -66,12 +69,10 @@ function parseSeriallOptions(options: SeriallOptions): Context[] {
  * @see parsePures
  * @see Pure
  */
-export function purify<T>(obj: T, options: SeriallOptions = {}): Pure[] {
-	const contexts = parseSeriallOptions(options);
-	return obj2pures(obj, contexts);
+export function purifySync<T>(obj: T, options: SeriallOptionsSync = {}): Pure[] {
+	const contexts = parseSeriallOptionsSync(options);
+	return obj2puresSync(obj, contexts);
 }
-
-export type StringifyFormatOptions = { format: 'json' | 'toml' | 'yaml' };
 
 /**
  * Serialize an object to a JSON string.
@@ -79,12 +80,12 @@ export type StringifyFormatOptions = { format: 'json' | 'toml' | 'yaml' };
  * @param options - Options
  * @returns A string representing the object in the specified format.
  */
-export function stringify<T>(
+export function stringifySync<T>(
 	obj: T,
-	options: SeriallOptions & Partial<StringifyFormatOptions> = {},
+	options: SeriallOptionsSync & Partial<StringifyFormatOptions> = {},
 ): string {
-	const contexts = parseSeriallOptions(options);
-	const pures = obj2pures(obj, contexts);
+	const contexts = parseSeriallOptionsSync(options);
+	const pures = obj2puresSync(obj, contexts);
 	switch (options.format) {
 		case 'toml':
 			return toml.stringify(pures as unknown as Record<string, unknown>);
@@ -103,26 +104,25 @@ export function stringify<T>(
  * @param options - Configuration options for deserialization
  * @returns The reconstructed object instance
  *
- * @see purify
+ * @see purifySync
  * @see Pure
  */
-export function parse<T>(str: Pure[], options?: SeriallOptions): T;
-
+export function parseSync<T>(str: Pure[], options?: SeriallOptionsSync): T;
 /**
  * Deserialize a JSON string to an object.
  * @param str - The JSON string to parse.
  * @param options - Options
  * @returns The parsed object.
  */
-export function parse<T>(
+export function parseSync<T>(
 	str: string,
-	options?: SeriallOptions & Partial<StringifyFormatOptions>,
+	options?: SeriallOptionsSync & Partial<StringifyFormatOptions>,
 ): T;
-export function parse<T>(
+export function parseSync<T>(
 	arg0: Pure[] | string,
-	options: SeriallOptions & Partial<StringifyFormatOptions> = {},
+	options: SeriallOptionsSync & Partial<StringifyFormatOptions> = {},
 ): T {
-	const contexts = parseSeriallOptions(options);
+	const contexts = parseSeriallOptionsSync(options);
 	if (typeof arg0 === 'string') {
 		let pures: Pure[];
 		switch (options.format) {
@@ -137,9 +137,9 @@ export function parse<T>(
 				pures = JSON.parse(arg0) as unknown as Pure[];
 				break;
 		}
-		return pures2obj(pures, contexts);
+		return pures2objSync(pures, contexts);
 	} else {
-		return pures2obj(arg0, contexts);
+		return pures2objSync(arg0, contexts);
 	}
 }
 
@@ -150,13 +150,10 @@ export function parse<T>(
  * @param options - Options
  * @returns A clone of the object.
  *
- * @see purify
+ * @see purifySync
  * @see parsePures
  */
-export function deepClone<T>(obj: T, options: SeriallOptions = {}): T {
-	const contexts = parseSeriallOptions(options);
-	return pures2obj(
-		obj2pures(obj, contexts),
-		contexts,
-	);
+export function deepCloneSync<T>(obj: T, options: SeriallOptionsSync = {}): T {
+	const contexts = parseSeriallOptionsSync(options);
+	return pures2objSync(obj2puresSync(obj, contexts), contexts);
 }

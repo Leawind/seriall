@@ -1,17 +1,17 @@
 import { assert, assertStrictEquals, assertThrows } from '@std/assert';
-import * as seriall from '@/mod.ts';
+import { seriall_sync as seriall } from '@/index.ts';
 
-Deno.test(function testRaw() {
+Deno.test('Deep clone raw values', () => {
 	['Hello world!', 12138, false, true, null]
 		.forEach((v) => assertStrictEquals(seriall.deepClone(v), v));
 });
 
-Deno.test(function testSpecial() {
+Deno.test('Deep clone special values', () => {
 	[NaN, Infinity, -Infinity, undefined, 141592653589793238462643383279502884n]
 		.forEach((v) => assertStrictEquals(seriall.deepClone(v), v));
 });
 
-Deno.test(function testSymbol() {
+Deno.test('Deep clone Symbol values', () => {
 	const globalSymbol = Symbol.for('F');
 
 	const clonedF = seriall.deepClone(globalSymbol);
@@ -25,7 +25,7 @@ Deno.test(function testSymbol() {
 	);
 });
 
-Deno.test(function testArray() {
+Deno.test('Deep clone arrays', () => {
 	// flat array
 	const array = [1, 2, 3];
 	const arrayCloned = seriall.deepClone(array);
@@ -43,7 +43,9 @@ Deno.test(function testArray() {
 	];
 	assertStrictEquals(
 		seriall.stringify(deepArray),
-		seriall.stringify(seriall.deepClone(seriall.deepClone(deepArray))),
+		seriall.stringify(
+			seriall.deepClone(seriall.deepClone(deepArray)),
+		),
 	);
 
 	// diverse array
@@ -56,20 +58,25 @@ Deno.test(function testArray() {
 	];
 	assertStrictEquals(
 		seriall.stringify(diverseArray),
-		seriall.stringify(seriall.deepClone(seriall.deepClone(diverseArray))),
+		seriall.stringify(
+			seriall.deepClone(seriall.deepClone(diverseArray)),
+		),
 	);
 });
 
-Deno.test(function testRefValue() {
+Deno.test('Deep clone with reference values', () => {
 	const mySymbol = Symbol('My Symbol');
 	const options: seriall.ContextLike = { palette: { mySymbol } };
 	assertStrictEquals(
 		seriall.stringify(mySymbol, options),
-		seriall.stringify(seriall.deepClone(mySymbol, options), options),
+		seriall.stringify(
+			seriall.deepClone(mySymbol, options),
+			options,
+		),
 	);
 });
 
-Deno.test(function testPrototype() {
+Deno.test('Deep clone prototypes', () => {
 	class A {}
 	class B extends A {}
 	class C extends B {}
@@ -95,12 +102,15 @@ Deno.test(function testPrototype() {
 	].forEach((proto) =>
 		assertStrictEquals(
 			seriall.stringify(proto, options),
-			seriall.stringify(seriall.deepClone(proto, options), options),
+			seriall.stringify(
+				seriall.deepClone(proto, options),
+				options,
+			),
 		)
 	);
 });
 
-Deno.test(function testObject() {
+Deno.test('Deep clone objects with various types', () => {
 	const original = {
 		raw: [0, 1234, 'hello world', false, true, null],
 		special: [undefined, 1n],
@@ -115,7 +125,7 @@ Deno.test(function testObject() {
 	);
 });
 
-Deno.test(function testCustomAdapter() {
+Deno.test('Deep clone with custom adapter', () => {
 	class A {
 		constructor(public value: string) {}
 	}
@@ -141,7 +151,7 @@ Deno.test(function testCustomAdapter() {
 	);
 });
 
-Deno.test(function testSameObject() {
+Deno.test('Deep clone object with same references', () => {
 	const wangcai = {
 		name: 'Wangcai',
 		age: 7,
@@ -157,7 +167,7 @@ Deno.test(function testSameObject() {
 	assert(cloned.left === cloned.right);
 });
 
-Deno.test(function selfRefer() {
+Deno.test('Deep clone self-referencing object', () => {
 	type Reference<T> = { ref?: T };
 
 	const original: Reference<unknown> = {};
@@ -168,7 +178,7 @@ Deno.test(function selfRefer() {
 	assert(cloned === cloned.ref);
 });
 
-Deno.test(function circularRefer() {
+Deno.test('Deep clone circular references', () => {
 	type Reference<T> = { ref?: T };
 
 	const a: Reference<unknown> = {};

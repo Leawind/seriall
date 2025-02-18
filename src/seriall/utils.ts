@@ -1,3 +1,5 @@
+export type StringifyFormatOptions = { format: 'json' | 'toml' | 'yaml' };
+
 /**
  * Checks if a symbol is registered in the global symbol registry.
  *
@@ -48,9 +50,7 @@ export function withSupers(
  * @returns Formal symbol notation with proper quote escaping
  */
 export function symbolToString(sb: symbol): string {
-	return sb.description
-		? `Symbol("${sb.description.replaceAll('"', '\\"')}")`
-		: `Symbol()`;
+	return sb.description ? `Symbol("${sb.description.replaceAll('"', '\\"')}")` : `Symbol()`;
 }
 
 /**
@@ -172,9 +172,7 @@ export function clonePureFunction<F extends (...args: never[]) => unknown>(
 		cloned = new Function(...args, body) as F;
 	} catch (e) {
 		throw new Error(
-			`Failed to reconstruct function: ${
-				e instanceof Error ? e.message : String(e)
-			}`,
+			`Failed to reconstruct function: ${e instanceof Error ? e.message : String(e)}`,
 		);
 	}
 	cloned.prototype = func.prototype;

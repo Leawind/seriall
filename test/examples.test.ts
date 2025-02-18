@@ -1,9 +1,9 @@
 import { assertThrows } from '@std/assert/throws';
 import { assert } from '@std/assert/assert';
 
-import * as seriall from '@/mod.ts';
+import { seriall_sync as seriall } from '@/index.ts';
 
-Deno.test(function examples() {
+Deno.test('Serialize and print various values', () => {
 	console.log(`| Value | Serialized |`);
 	console.log(`|-|-|`);
 	Object.entries({
@@ -22,7 +22,7 @@ Deno.test(function examples() {
 	).map((s) => console.log('|', s.join(' | '), '|'));
 });
 
-Deno.test(function tutorial_Simple() {
+Deno.test('Simple serialization and deserialization', () => {
 	const alice = { name: '' };
 	const json = seriall.stringify(alice);
 	const dolly = seriall.parse<typeof alice>(json);
@@ -30,7 +30,7 @@ Deno.test(function tutorial_Simple() {
 	assert(alice.name === dolly.name);
 });
 
-Deno.test(function tutorial_Simple_Custom_Class() {
+Deno.test('Serialize and deserialize custom class Sheep', () => {
 	class Sheep {
 		private name?: string;
 		public constructor(name?: string) {
@@ -58,7 +58,7 @@ Deno.test(function tutorial_Simple_Custom_Class() {
 	assert(dolly.getName() === 'Dolly');
 });
 
-Deno.test(function tutorial_builtin_class() {
+Deno.test('Serialize and deserialize built-in classes', () => {
 	const original = {
 		array: [2, 3, 4],
 		set: new Set([12138, 7355608]),
@@ -75,13 +75,16 @@ Deno.test(function tutorial_builtin_class() {
 	assert(cloned.typed_array[2] === 5);
 });
 
-Deno.test(function tutorial_Custom_Class() {
+Deno.test('Serialize and deserialize custom class Cat', () => {
 	class Cat {}
 	const mimi = new Cat();
 
 	// `mimi` is an instance of `Cat`, which is a custom Class.
 	// If you don't tell it how to get `Cat`, it won't be able to deserialize `mimi` and make it an instance of `Cat`. Therefore it refuses to serialize it.
-	assertThrows(() => seriall.purify(mimi), seriall.SeriallResolveFailedError);
+	assertThrows(
+		() => seriall.purify(mimi),
+		seriall.SeriallResolveFailedError,
+	);
 
 	// The second argument is telling seriall how to find class `Cat`: just by name "Cat"
 	const pure = seriall.purify(mimi, { palette: { Cat: Cat } });
@@ -92,7 +95,7 @@ Deno.test(function tutorial_Custom_Class() {
 	assert(clonedMimi instanceof Cat);
 });
 
-Deno.test(function tutorial_Custom_Class() {
+Deno.test('Serialize and deserialize custom class Cat with method', () => {
 	class Cat {
 		meow: () => void = () => console.debug('Meow!');
 	}

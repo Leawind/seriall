@@ -1,90 +1,25 @@
-import {
-	assert,
-	assertFalse,
-	assertStrictEquals,
-	assertThrows,
-} from '@std/assert';
-import {
-	clonePureFunction,
-	isGlobalSymbol,
-	looksLikeClass,
-	looksLikePrototype,
-	symbolToString,
-	withSupers,
-} from '@/seriall/utils.ts';
-import * as seriall from '@/mod.ts';
+import { assert, assertFalse, assertStrictEquals, assertThrows } from '@std/assert';
+import { seriall_sync as seriall } from '@/index.ts';
 
-Deno.test(function testBiMap() {
-	const bm = new seriall.BiMap<unknown, unknown>();
+Deno.test('Check if Symbol is global', () => {
+	assert(seriall.utils.isGlobalSymbol(Symbol.for('global')));
+	assertFalse(seriall.utils.isGlobalSymbol(Symbol('local')));
 
-	// set
-	bm.set('c', 299792458);
-	bm.set('undef', undefined);
-	bm.setAll({
-		null: null,
-		BiMap: seriall.BiMap,
-	});
-	bm.setMap(
-		new Map([
-			[false, 9000],
-			[true, 9000],
-		]),
-	);
-	bm.setPairs([
-		[false, 5432],
-		[true, 5432],
-		[true, 9000],
-	]);
-
-	// get
-	assertStrictEquals(bm.getValue('c'), 299792458);
-	assertStrictEquals(bm.getKey(299792458), 'c');
-
-	assertStrictEquals(bm.getValue('undef'), undefined);
-	assertStrictEquals(bm.getKey(undefined), 'undef');
-
-	assertStrictEquals(bm.getValue('null'), null);
-	assertStrictEquals(bm.getKey(null), 'null');
-
-	assertStrictEquals(bm.getValue('BiMap'), seriall.BiMap);
-	assertStrictEquals(bm.getKey(seriall.BiMap), 'BiMap');
-
-	assertFalse(bm.hasKey(false));
-	assertFalse(bm.hasValue(5432));
-	assertStrictEquals(bm.getValue(true), 9000);
-	assertStrictEquals(bm.getKey(9000), true);
-
-	// forEach
-	bm.forEach((pair) => pair);
-
-	// delete, has
-	bm.deleteKey('undef');
-	assertFalse(bm.hasKey('undefined'));
-	assertFalse(bm.hasValue(undefined));
-
-	bm.deleteValue(seriall.BiMap);
-	assertFalse(bm.hasKey('BiMap'));
-	assertFalse(bm.hasValue(seriall.BiMap));
+	assertFalse(seriall.utils.isGlobalSymbol(Symbol.iterator));
+	assertFalse(seriall.utils.isGlobalSymbol(Symbol.asyncIterator));
 });
 
-Deno.test(function testIsGlobalSymbol() {
-	assert(isGlobalSymbol(Symbol.for('global')));
-	assertFalse(isGlobalSymbol(Symbol('local')));
-
-	assertFalse(isGlobalSymbol(Symbol.iterator));
-	assertFalse(isGlobalSymbol(Symbol.asyncIterator));
-});
-
-Deno.test(function testSymbolToString() {
+Deno.test('Convert Symbol to string', () => {
 	const s = Symbol();
 	const mySymbol = Symbol('mySymbol');
 	const yourSymbol = Symbol(6);
 
-	assertStrictEquals(symbolToString(s), `Symbol()`);
-	assertStrictEquals(symbolToString(mySymbol), `Symbol("mySymbol")`);
-	assertStrictEquals(symbolToString(yourSymbol), `Symbol("6")`);
+	assertStrictEquals(seriall.utils.symbolToString(s), `Symbol()`);
+	assertStrictEquals(seriall.utils.symbolToString(mySymbol), `Symbol("mySymbol")`);
+	assertStrictEquals(seriall.utils.symbolToString(yourSymbol), `Symbol("6")`);
 });
-Deno.test(function testIsPrototype() {
+
+Deno.test('Check if value looks like a prototype', () => {
 	class Dad {}
 	class Son extends Dad {}
 	class Gon extends Son {}
@@ -100,7 +35,7 @@ Deno.test(function testIsPrototype() {
 		Array.prototype,
 		Boolean.prototype,
 		Number.prototype,
-	].forEach((v) => assert(looksLikePrototype(v)));
+	].forEach((v) => assert(seriall.utils.looksLikePrototype(v)));
 
 	[
 		gon.constructor,
@@ -112,10 +47,10 @@ Deno.test(function testIsPrototype() {
 		{},
 		() => {},
 		function named() {},
-	].forEach((v) => assertFalse(looksLikePrototype(v)));
+	].forEach((v) => assertFalse(seriall.utils.looksLikePrototype(v)));
 });
 
-Deno.test(function testIsClass() {
+Deno.test('Check if value looks like a class', () => {
 	class Animal {}
 	class Dog extends Animal {}
 
@@ -130,7 +65,7 @@ Deno.test(function testIsClass() {
 		Boolean,
 		Int8Array,
 		ArrayBuffer,
-	].forEach((v) => assert(looksLikeClass(v)));
+	].forEach((v) => assert(seriall.utils.looksLikeClass(v)));
 
 	[
 		Animal.prototype,
@@ -158,24 +93,24 @@ Deno.test(function testIsClass() {
 		JSON,
 		setInterval,
 		clearInterval,
-	].forEach((v) => assertFalse(looksLikeClass(v)));
+	].forEach((v) => assertFalse(seriall.utils.looksLikeClass(v)));
 });
 
-Deno.test(function testWithSupers() {
+Deno.test('Get class with superclasses', () => {
 	class A {}
 	class B extends A {}
 	class C extends B {}
 
-	const supers = withSupers(C);
+	const supers = seriall.utils.withSupers(C);
 	assertStrictEquals(supers.C, C);
 	assertStrictEquals(supers.B, B);
 	assertStrictEquals(supers.A, A);
 
-	const emptyResult = withSupers(Object);
+	const emptyResult = seriall.utils.withSupers(Object);
 	assertStrictEquals(emptyResult.Object, Object);
 });
 
-Deno.test(function testClonePureFunction() {
+Deno.test('Clone pure functions', () => {
 	function average(a: number, b: number) {
 		const sum = a + b;
 		return sum / 2;
@@ -194,7 +129,7 @@ Deno.test(function testClonePureFunction() {
 	const lambdaAvg = (a: number, b: number) => (a + b) / 2;
 
 	[average, anonymousAvg, lambdaAvgWithBody, lambdaAvg].forEach((avg) => {
-		const cloned = clonePureFunction(avg);
+		const cloned = seriall.utils.clonePureFunction(avg);
 		[
 			[1, 2],
 			[6, 3],
@@ -215,7 +150,7 @@ Deno.test(function testClonePureFunction() {
 	});
 });
 
-Deno.test(function testWithSupers() {
+Deno.test('Purify object with class hierarchy', () => {
 	class A {}
 	class B extends A {}
 	class C extends B {}
@@ -231,17 +166,17 @@ Deno.test(function testWithSupers() {
 		seriall.SeriallResolveFailedError,
 	);
 	seriall.purify(original, { palette: { A, B, C } });
-	seriall.purify(original, { palette: { ...withSupers(C) } });
-	seriall.purify(original, { palette: withSupers(C) });
+	seriall.purify(original, { palette: { ...seriall.utils.withSupers(C) } });
+	seriall.purify(original, { palette: seriall.utils.withSupers(C) });
 
-	const cloned = seriall.deepClone(original, { palette: withSupers(C) });
+	const cloned = seriall.deepClone(original, { palette: seriall.utils.withSupers(C) });
 
 	assert(cloned.a instanceof A);
 	assert(cloned.b instanceof B);
 	assert(cloned.c instanceof C);
 });
 
-Deno.test(function testStringifyAndParse() {
+Deno.test('Stringify and parse object in various formats', () => {
 	const obj = { a: 1, b: 'test', c: [1, 2, 3] };
 
 	// JSON

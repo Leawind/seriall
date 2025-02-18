@@ -29,9 +29,7 @@ export class SeriallInvalidPureError extends SeriallError {
  */
 export class SeriallResolveFailedError<T> extends SeriallError {
 	constructor(cause: T) {
-		const desc = typeof cause === 'symbol'
-			? symbolToString(cause)
-			: cause?.toString();
+		const desc = typeof cause === 'symbol' ? symbolToString(cause) : cause?.toString();
 		super(`Value not found in any context: ${desc}`, { cause });
 	}
 }

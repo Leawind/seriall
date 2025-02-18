@@ -1,18 +1,19 @@
-import type { Adapter, ContextAdapters } from '@/seriall/core/context.ts';
 import type { PureIndex } from '@/seriall/core/pure.ts';
 import { BUILTIN_PALETTE } from '@/seriall/builtin/palette.ts';
 
-export function typed<A, B>(adapter: Adapter<A, B>) {
+import type { AdapterSync, ContextAdaptersSync } from '@/seriall-sync/core/context.ts';
+
+export function typed<A, B>(adapter: AdapterSync<A, B>): AdapterSync<A, B> {
 	return adapter;
 }
 
 /**
  * Adapters for some commonly-used built-in types
  */
-export const BUILTIN_ADAPTERS: ContextAdapters = new Map([
+export const BUILTIN_ADAPTERS_SYNC: ContextAdaptersSync = new Map([
 	// Primitives
 	...[Number, String, Boolean]
-		.map<[string, Adapter<unknown, unknown>]>((clazz) => [
+		.map<[string, AdapterSync<unknown, unknown>]>((clazz) => [
 			clazz.name,
 			typed({
 				serialize: (obj: object) => obj.valueOf(),
@@ -29,12 +30,9 @@ export const BUILTIN_ADAPTERS: ContextAdapters = new Map([
 			serialize: (obj: Map<unknown, unknown>) =>
 				Array.from(
 					obj.entries()
-						.map<[unknown, unknown]>(
-							([key, value]) => [key, value],
-						),
+						.map<[unknown, unknown]>(([key, value]) => [key, value]),
 				),
-			deserialize: (pure: [PureIndex, PureIndex][]) =>
-				new Map(pure.map(([kid, vid]) => [kid, vid])),
+			deserialize: (pure: [PureIndex, PureIndex][]) => new Map(pure.map(([kid, vid]) => [kid, vid])),
 		}),
 
 		Date: typed({
@@ -54,8 +52,7 @@ export const BUILTIN_ADAPTERS: ContextAdapters = new Map([
 		}),
 		URLSearchParams: typed({
 			serialize: (obj: URLSearchParams) => Array.from(obj.entries()),
-			deserialize: (pure: [string, string][]) =>
-				new URLSearchParams(pure),
+			deserialize: (pure: [string, string][]) => new URLSearchParams(pure),
 		}),
 		URLPattern: typed({
 			serialize: (obj: URLPattern) => ({
@@ -117,11 +114,8 @@ export const BUILTIN_ADAPTERS: ContextAdapters = new Map([
 			}) => new DataView(pure.buf, pure.off, pure.len),
 		}),
 		ByteLengthQueuingStrategy: typed({
-			serialize: (obj: ByteLengthQueuingStrategy) => ({
-				hwm: obj.highWaterMark,
-			}),
-			deserialize: (pure: { hwm: number }) =>
-				new ByteLengthQueuingStrategy({ highWaterMark: pure.hwm }),
+			serialize: (obj: ByteLengthQueuingStrategy) => ({ hwm: obj.highWaterMark }),
+			deserialize: (pure: { hwm: number }) => new ByteLengthQueuingStrategy({ highWaterMark: pure.hwm }),
 		}),
 		ImageData: typed({
 			serialize: (obj: ImageData) => ({
@@ -160,12 +154,11 @@ export const BUILTIN_ADAPTERS: ContextAdapters = new Map([
 		'Float64Array',
 		'BigUint64Array',
 		'BigInt64Array',
-	].map<[string, Adapter<unknown, unknown>]>((name) => [
+	].map<[string, AdapterSync<unknown, unknown>]>((name) => [
 		name,
 		typed({
 			serialize: (obj: Int8Array) => obj.buffer, // instanceof ArrayBuffer
-			deserialize: (buffer: ArrayBuffer) =>
-				new (BUILTIN_PALETTE.getValue<typeof Int8Array>(name))(buffer),
+			deserialize: (buffer: ArrayBuffer) => new (BUILTIN_PALETTE.getValue<typeof Int8Array>(name))(buffer),
 		}),
 	]),
 
@@ -211,7 +204,7 @@ export const BUILTIN_ADAPTERS: ContextAdapters = new Map([
 			'TypeError',
 			'URIError',
 		],
-	].map<[string, Adapter<unknown, unknown>]>((name) => [
+	].map<[string, AdapterSync<unknown, unknown>]>((name) => [
 		name,
 		typed({
 			serialize: () => {
