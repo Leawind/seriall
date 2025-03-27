@@ -3,10 +3,17 @@
   "specifiers": {
     "jsr:@leawind/bimap@0.1": "0.1.0",
     "jsr:@std/assert@*": "1.0.10",
+    "jsr:@std/assert@^1.0.12": "1.0.12",
+    "jsr:@std/collections@^1.0.10": "1.0.10",
     "jsr:@std/collections@^1.0.9": "1.0.10",
     "jsr:@std/internal@^1.0.5": "1.0.5",
+    "jsr:@std/internal@^1.0.6": "1.0.6",
     "jsr:@std/toml@*": "1.0.2",
-    "jsr:@std/yaml@*": "1.0.5"
+    "jsr:@std/toml@1": "1.0.2",
+    "jsr:@std/toml@^1.0.3": "1.0.3",
+    "jsr:@std/yaml@*": "1.0.5",
+    "jsr:@std/yaml@1": "1.0.5",
+    "jsr:@std/yaml@^1.0.5": "1.0.5"
   },
   "jsr": {
     "@leawind/bimap@0.1.0": {
@@ -15,7 +22,13 @@
     "@std/assert@1.0.10": {
       "integrity": "59b5cbac5bd55459a19045d95cc7c2ff787b4f8527c0dd195078ff6f9481fbb3",
       "dependencies": [
-        "jsr:@std/internal"
+        "jsr:@std/internal@^1.0.5"
+      ]
+    },
+    "@std/assert@1.0.12": {
+      "integrity": "08009f0926dda9cbd8bef3a35d3b6a4b964b0ab5c3e140a4e0351fbf34af5b9a",
+      "dependencies": [
+        "jsr:@std/internal@^1.0.6"
       ]
     },
     "@std/collections@1.0.10": {
@@ -24,10 +37,19 @@
     "@std/internal@1.0.5": {
       "integrity": "54a546004f769c1ac9e025abd15a76b6671ddc9687e2313b67376125650dc7ba"
     },
+    "@std/internal@1.0.6": {
+      "integrity": "9533b128f230f73bd209408bb07a4b12f8d4255ab2a4d22a1fd6d87304aca9a4"
+    },
     "@std/toml@1.0.2": {
       "integrity": "5892ba489c5b512265a384238a8fe8dddbbb9498b4b210ef1b9f0336a423a39b",
       "dependencies": [
-        "jsr:@std/collections"
+        "jsr:@std/collections@^1.0.9"
+      ]
+    },
+    "@std/toml@1.0.3": {
+      "integrity": "dd5c039860a312779ec19980be000d977ce8f56fadaa073d8f33632f21540ffb",
+      "dependencies": [
+        "jsr:@std/collections@^1.0.10"
       ]
     },
     "@std/yaml@1.0.5": {
@@ -36,7 +58,10 @@
   },
   "workspace": {
     "dependencies": [
-      "jsr:@leawind/bimap@0.1"
+      "jsr:@leawind/bimap@0.1",
+      "jsr:@std/assert@^1.0.12",
+      "jsr:@std/toml@^1.0.3",
+      "jsr:@std/yaml@^1.0.5"
     ]
   }
 }

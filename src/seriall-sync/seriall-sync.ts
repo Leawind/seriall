@@ -2,13 +2,13 @@ import * as toml from '@std/toml';
 import * as yaml from '@std/yaml';
 import { BiMap } from '@leawind/bimap';
 
-import type { Pure } from '@/seriall/core/pure.ts';
 import { BUILTIN_PALETTE } from '@/seriall/builtin/palette.ts';
+import type { Pure } from '@/seriall/core/pure.ts';
 import type { StringifyFormatOptions } from '@/seriall/utils.ts';
 
-import type { ContextSync, ContextSyncLike } from '@/seriall-sync/core/context.ts';
 import { BUILTIN_ADAPTERS_SYNC } from '@/seriall-sync/builtin/adapters.ts';
 import { obj2puresSync, pures2objSync } from '@/seriall-sync/core/core.ts';
+import type { ContextSync, ContextSyncLike } from '@/seriall-sync/core/context.ts';
 
 function buildSeriallContextSync(options: ContextSyncLike): ContextSync {
 	return {
