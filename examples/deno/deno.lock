@@ -2,7 +2,7 @@
   "version": "4",
   "specifiers": {
     "jsr:@leawind/bimap@0.1": "0.1.0",
-    "jsr:@leawind/seriall@~0.5.1": "0.5.1",
+    "jsr:@leawind/seriall@~0.5.2": "0.5.2",
     "jsr:@std/assert@1": "1.0.11",
     "jsr:@std/collections@^1.0.10": "1.0.10",
     "jsr:@std/internal@^1.0.5": "1.0.5",
@@ -13,8 +13,8 @@
     "@leawind/bimap@0.1.0": {
       "integrity": "d5a7b682e0422ef513226629b2f3257e2fe315fe68a7c4dc5cbd4acc4699968c"
     },
-    "@leawind/seriall@0.5.1": {
-      "integrity": "7d8dcda9b376f68fdd628ced9ade11eaf625eacf3c2689f8bfa460f45279f609",
+    "@leawind/seriall@0.5.2": {
+      "integrity": "8c06ce1c5ba5c3b6856317c5a8a2196dda5160421be883765c08ae218c440fd3",
       "dependencies": [
         "jsr:@leawind/bimap",
         "jsr:@std/toml",
@@ -45,7 +45,7 @@
   },
   "workspace": {
     "dependencies": [
-      "jsr:@leawind/seriall@~0.5.1",
+      "jsr:@leawind/seriall@~0.5.2",
       "jsr:@std/assert@1"
     ]
   }
