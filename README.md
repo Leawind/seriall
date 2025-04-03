@@ -23,7 +23,6 @@
 - **Supports circular references**
 - **Serializable custom class instances**
 - **Deep cloning capability**
-- **Lightweight & dependency-free**
 
 ## Installation
 
