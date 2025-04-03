@@ -7,12 +7,12 @@ export * from '@/seriall/index.ts';
 // Async
 export { BUILTIN_ADAPTERS_ASYNC as BUILTIN_ADAPTERS } from '@/seriall-async/builtin/adapters.ts';
 
-export type {
-	AdapterAsync as Adapter,
-	ContextAdaptersAsync as ContextAdapters,
-	ContextAdaptersAsyncLike as ContextAdaptersLike,
-	ContextAsync as Context,
-	ContextAsyncLike as ContextLike,
+export {
+	type AdapterAsync as Adapter,
+	type ContextAdaptersAsync as ContextAdapters,
+	type ContextAdaptersAsyncLike as ContextAdaptersLike,
+	type ContextAsync as Context,
+	type ContextAsyncLike as ContextLike,
 } from '@/seriall-async/core/context.ts';
 
 export { obj2puresAsync as obj2pures, pures2objAsync as pures2obj } from '@/seriall-async/core/core.ts';
