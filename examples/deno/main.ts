@@ -1,4 +1,4 @@
-import * as seriall from "@leawind/seriall";
+import { seriall_sync as seriall } from "@leawind/seriall";
 
 class A {
   private id: number;
