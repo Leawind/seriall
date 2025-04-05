@@ -43,7 +43,7 @@ export async function serializeRecursivelyAsync<T>(
 	let ctxKey: string | null = null;
 	for (const context of contexts) {
 		if (context.palette.hasValue(obj)) {
-			ctxKey = context.palette.getKey(obj);
+			ctxKey = context.palette.getKey(obj)!;
 			break;
 		}
 	}
@@ -232,7 +232,7 @@ export async function deserializeRecursivelyAsync<T>(
 						for (const context of contexts) {
 							if (context.palette.hasKey(pure[PureKey.Key])) {
 								result = context.palette
-									.getValue(pure[PureKey.Key]);
+									.getValue(pure[PureKey.Key])!;
 								found = true;
 								break;
 							}

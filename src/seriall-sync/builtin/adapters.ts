@@ -158,7 +158,7 @@ export const BUILTIN_ADAPTERS_SYNC: ContextAdaptersSync = new Map([
 		name,
 		typed({
 			serialize: (obj: Int8Array) => obj.buffer, // instanceof ArrayBuffer
-			deserialize: (buffer: ArrayBuffer) => new (BUILTIN_PALETTE.getValue<typeof Int8Array>(name))(buffer),
+			deserialize: (buffer: ArrayBuffer) => new (BUILTIN_PALETTE.getValue<typeof Int8Array>(name)!)(buffer),
 		}),
 	]),
 

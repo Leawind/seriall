@@ -44,7 +44,7 @@ export function serializeRecursivelySync<T>(
 	let ctxKey: string | null = null;
 	for (const context of contexts) {
 		if (context.palette.hasValue(obj)) {
-			ctxKey = context.palette.getKey(obj);
+			ctxKey = context.palette.getKey(obj)!;
 			break;
 		}
 	}
@@ -234,7 +234,7 @@ export function deserializeRecursivelySync<T>(
 						// search the key in contexts
 						for (const context of contexts) {
 							if (context.palette.hasKey(pure[PureKey.Key])) {
-								result = context.palette.getValue(pure[PureKey.Key]);
+								result = context.palette.getValue(pure[PureKey.Key])!;
 								break typeSwitch;
 							}
 						}
