@@ -1,4 +1,4 @@
-import type { ContextPalette, ContextPaletteLike } from '@/seriall/core/context.ts';
+import type { ContextPalette, ContextPaletteLike } from '../../seriall/core/context.ts';
 
 /**
  * @see AdapterSync

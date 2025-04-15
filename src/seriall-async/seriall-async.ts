@@ -2,13 +2,13 @@ import * as toml from '@std/toml';
 import * as yaml from '@std/yaml';
 import { BiMap } from '@leawind/bimap';
 
-import { BUILTIN_PALETTE } from '@/seriall/builtin/palette.ts';
-import type { Pure } from '@/seriall/core/pure.ts';
-import type { StringifyFormatOptions } from '@/seriall/utils.ts';
+import { BUILTIN_PALETTE } from '../seriall/builtin/palette.ts';
+import type { Pure } from '../seriall/core/pure.ts';
+import type { StringifyFormatOptions } from '../seriall/utils.ts';
 
-import { obj2puresAsync, pures2objAsync } from '@/seriall-async/core/core.ts';
-import type { ContextAsync, ContextAsyncLike } from '@/seriall-async/core/context.ts';
-import { BUILTIN_ADAPTERS_ASYNC } from '@/seriall-async/builtin/adapters.ts';
+import { obj2puresAsync, pures2objAsync } from './core/core.ts';
+import type { ContextAsync, ContextAsyncLike } from './core/context.ts';
+import { BUILTIN_ADAPTERS_ASYNC } from './builtin/adapters.ts';
 
 function buildSeriallContextAsync(options: ContextAsyncLike): ContextAsync {
 	return {

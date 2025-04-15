@@ -1,5 +1,5 @@
-import type { ContextAdaptersAsync } from '@/seriall-async/core/context.ts';
-import { BUILTIN_ADAPTERS_SYNC } from '@/seriall-sync/builtin/adapters.ts';
+import type { ContextAdaptersAsync } from '../core/context.ts';
+import { BUILTIN_ADAPTERS_SYNC } from '../../seriall-sync/builtin/adapters.ts';
 
 /**
  * @see BUILTIN_ADAPTERS_SYNC

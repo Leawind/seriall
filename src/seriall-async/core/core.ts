@@ -1,7 +1,7 @@
-import type { Pure } from '@/seriall/core/pure.ts';
+import type { Pure } from '../../seriall/core/pure.ts';
 
-import type { ContextAsync } from '@/seriall-async/core/context.ts';
-import { deserializeRecursivelyAsync, serializeRecursivelyAsync } from '@/seriall-async/core/serialization.ts';
+import type { ContextAsync } from '../core/context.ts';
+import { deserializeRecursivelyAsync, serializeRecursivelyAsync } from '../core/serialization.ts';
 
 export async function obj2puresAsync<T>(
 	obj: T,

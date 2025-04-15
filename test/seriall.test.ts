@@ -1,5 +1,5 @@
 import { assert, assertStrictEquals, assertThrows } from '@std/assert';
-import { seriall_sync as seriall } from '@/index.ts';
+import { seriall_sync as seriall } from '../src/index.ts';
 
 Deno.test('Deep clone raw values', () => {
 	['Hello world!', 12138, false, true, null]

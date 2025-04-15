@@ -1,13 +1,13 @@
-import { type Pure, type PureIndex, PureKey, PureType, SpecialPureValue } from '@/seriall/core/pure.ts';
-import { isGlobalSymbol, looksLikePrototype } from '@/seriall/utils.ts';
+import { type Pure, type PureIndex, PureKey, PureType, SpecialPureValue } from '../../seriall/core/pure.ts';
+import { isGlobalSymbol, looksLikePrototype } from '../../seriall/utils.ts';
 
-import type { AdapterSync, ContextSync } from '@/seriall-sync/core/context.ts';
+import type { AdapterSync, ContextSync } from './context.ts';
 import {
 	SeriallInvalidPureError,
 	SeriallReferredAdapterNotFoundError,
 	SeriallReferredValueNotFoundError,
 	SeriallResolveFailedError,
-} from '@/seriall/core/error.ts';
+} from '../../seriall/core/error.ts';
 
 /**
  * @template T

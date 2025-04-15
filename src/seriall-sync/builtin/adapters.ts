@@ -1,7 +1,7 @@
-import type { PureIndex } from '@/seriall/core/pure.ts';
-import { BUILTIN_PALETTE } from '@/seriall/builtin/palette.ts';
+import type { PureIndex } from '../../seriall/core/pure.ts';
+import { BUILTIN_PALETTE } from '../../seriall/builtin/palette.ts';
 
-import type { AdapterSync, ContextAdaptersSync } from '@/seriall-sync/core/context.ts';
+import type { AdapterSync, ContextAdaptersSync } from '../core/context.ts';
 
 export function typed<A, B>(adapter: AdapterSync<A, B>): AdapterSync<A, B> {
 	return adapter;

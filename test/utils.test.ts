@@ -1,5 +1,5 @@
 import { assert, assertFalse, assertStrictEquals, assertThrows } from '@std/assert';
-import { seriall_sync as seriall } from '@/index.ts';
+import { seriall_sync as seriall } from '../src/index.ts';
 
 Deno.test('Check if Symbol is global', () => {
 	assert(seriall.utils.isGlobalSymbol(Symbol.for('global')));

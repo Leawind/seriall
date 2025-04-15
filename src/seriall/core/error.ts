@@ -1,5 +1,5 @@
-import { symbolToString } from '@/seriall/utils.ts';
-import type { PureRefAdapter, PureRefValue } from '@/seriall/core/pure.ts';
+import { symbolToString } from '../utils.ts';
+import type { PureRefAdapter, PureRefValue } from '../core/pure.ts';
 
 export class SeriallError extends Error {}
 

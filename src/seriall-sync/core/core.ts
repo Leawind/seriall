@@ -1,6 +1,6 @@
-import type { ContextSync } from '@/seriall-sync/core/context.ts';
-import type { Pure } from '@/seriall/core/pure.ts';
-import { deserializeRecursivelySync, serializeRecursivelySync } from '@/seriall-sync/core/serialization.ts';
+import type { ContextSync } from './context.ts';
+import type { Pure } from '../../seriall/core/pure.ts';
+import { deserializeRecursivelySync, serializeRecursivelySync } from './serialization.ts';
 
 /**
  * Converts an object to an array of `SeriallPure` objects.

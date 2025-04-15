@@ -1,4 +1,4 @@
-import type { ContextPalette, ContextPaletteLike } from '@/seriall/core/context.ts';
+import type { ContextPalette, ContextPaletteLike } from '../../seriall/core/context.ts';
 
 /**
  * Adapter for serialization/deserialization.

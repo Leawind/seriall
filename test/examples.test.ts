@@ -1,7 +1,7 @@
 import { assertThrows } from '@std/assert/throws';
 import { assert } from '@std/assert/assert';
 
-import { seriall_sync as seriall } from '@/index.ts';
+import { seriall_sync as seriall } from '../src/index.ts';
 
 Deno.test('Serialize and print various values', () => {
 	console.log(`| Value | Serialized |`);

@@ -1,8 +1,8 @@
 import { assert, assertFalse, assertStrictEquals, assertThrows } from '@std/assert';
-import { seriall_sync as seriall } from '@/index.ts';
+import { seriall_sync as seriall } from '../src/index.ts';
 
-import { BUILTIN_PALETTE } from '@/seriall/builtin/palette.ts';
-import { looksLikeClass } from '@/seriall/utils.ts';
+import { BUILTIN_PALETTE } from '../src/seriall/builtin/palette.ts';
+import { looksLikeClass } from '../src/seriall/utils.ts';
 
 Deno.test('Find classes without adapters in BUILTIN_PALETTE', () => {
 	const IGNORED = new Set<unknown>([

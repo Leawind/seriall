@@ -1,5 +1,5 @@
 import { assertThrows } from '@std/assert/throws';
-import { seriall_sync as seriall } from '@/index.ts';
+import { seriall_sync as seriall } from '../src/index.ts';
 
 Deno.test('Throw SeriallResolveFailedError when serializing Symbol', () => {
 	assertThrows(

@@ -1,5 +1,5 @@
 import { BiMap } from '@leawind/bimap';
-import type { ContextPalette } from '@/seriall/core/context.ts';
+import type { ContextPalette } from '../core/context.ts';
 
 /**
  * Palette for built-in global values.
