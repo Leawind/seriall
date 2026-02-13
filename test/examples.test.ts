@@ -7,11 +7,11 @@ Deno.test('Serialize and print various values', () => {
 	console.log(`| Value | Serialized |`);
 	console.log(`|-|-|`);
 	Object.entries({
-		'true': true,
+		true: true,
 		'12138': 12138,
 		'16n': 16n,
 		"[80, 'http']": [80, 'http'],
-		'Math': Math,
+		Math: Math,
 		'new Set()': new Set(),
 		"{ name: 'Steve' }": { name: 'Steve' },
 	}).map(([key, value]) =>

@@ -1,4 +1,8 @@
 node_modules/
-.vscode/
+dist/
 
-/TASKS.md
+.vscode/
+.idea/
+
+.lingma
+.trae

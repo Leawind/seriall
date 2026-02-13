@@ -60,7 +60,6 @@ Deno.test('Deep clone Set object', () => {
 	const original = new Set([2, 'str', 5, 7, 9]);
 	console.log(seriall.purify(original));
 	const cloned = seriall.deepClone(original);
-
 	[2, 'str', 5, 7, 9]
 		.forEach((v) => assert(cloned.has(v)));
 

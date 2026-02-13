@@ -81,7 +81,6 @@ Deno.test('Deep clone prototypes', () => {
 	class B extends A {}
 	class C extends B {}
 	const options: seriall.ContextLike = { palette: { A, B, C } };
-
 	[
 		Function.prototype,
 		Object.prototype,

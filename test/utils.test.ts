@@ -27,7 +27,6 @@ Deno.test('Check if value looks like a prototype', () => {
 	const dad = new Dad();
 	const son = new Son();
 	const gon = new Gon();
-
 	[
 		...[Dad.prototype, Son.prototype, Gon.prototype],
 		Object.prototype,
@@ -36,7 +35,6 @@ Deno.test('Check if value looks like a prototype', () => {
 		Boolean.prototype,
 		Number.prototype,
 	].forEach((v) => assert(seriall.utils.looksLikePrototype(v)));
-
 	[
 		gon.constructor,
 		...[Dad, Son, Gon, Object, Function, Array, Boolean, Number],
@@ -66,7 +64,6 @@ Deno.test('Check if value looks like a class', () => {
 		Int8Array,
 		ArrayBuffer,
 	].forEach((v) => assert(seriall.utils.looksLikeClass(v)));
-
 	[
 		Animal.prototype,
 		Dog.prototype,
@@ -127,7 +124,6 @@ Deno.test('Clone pure functions', () => {
 	};
 
 	const lambdaAvg = (a: number, b: number) => (a + b) / 2;
-
 	[average, anonymousAvg, lambdaAvgWithBody, lambdaAvg].forEach((avg) => {
 		const cloned = seriall.utils.clonePureFunction(avg);
 		[
