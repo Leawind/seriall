@@ -1,4 +1,4 @@
-name: Publish
+name: Publish to JSR and NPM
 on:
   workflow_dispatch:
   push:
@@ -10,29 +10,51 @@ permissions:
   id-token: write
 
 jobs:
-  publish:
+  verify:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Setup repo
-        uses: actions/checkout@v4
-
-      - name: Install Deno
-        uses: denoland/setup-deno@v1
+      - uses: actions/checkout@v6
+      - uses: denoland/setup-deno@v2
         with:
-          deno-version: v2.1.x
+          deno-version: v2.6.x
 
-      - name: Verify formatting
-        run: deno fmt --check
+      - name: Verify
+        run: deno task verify
 
-      - name: Verify formatting
-        run: deno fmt --check
+  publish-jsr:
+    name: Publish to JSR
+    needs:
+      - verify
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: denoland/setup-deno@v2
+        with:
+          deno-version: v2.6.x
 
-      - name: Run linter
-        run: deno lint
-
-      - name: Run tests
-        run: deno test -A
-
-      - name: Publish package
+      - name: Publish to JSR
         run: deno publish
+
+  # publish-npm:
+  #   name: Publish to NPM
+  #   needs:
+  #     - verify
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@v6
+  #     - uses: denoland/setup-deno@v2
+  #       with:
+  #         deno-version: v2.6.x
+  #     - uses: actions/setup-node@v6
+  #       with:
+  #         node-version: '24'
+  #         registry-url: 'https://registry.npmjs.org'
+
+  #     - name: Build NPM Package
+  #       run: deno task build-npm
+
+  #     - name: Publish to NPM
+  #       run: |
+  #         cd dist/npm
+  #         npm publish
