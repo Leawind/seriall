@@ -37,7 +37,6 @@
     ]
   },
   "imports": {
-    "@/": "./src/",
     "@deno/dnt": "jsr:@deno/dnt@^0.41.3",
     "@std/assert": "jsr:@std/assert@^1.0.12",
     "@std/toml": "jsr:@std/toml@^1.0.3",
