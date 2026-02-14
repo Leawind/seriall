@@ -1,6 +1,6 @@
 {
   "name": "@leawind/seriall",
-  "version": "0.5.3",
+  "version": "0.5.4",
   "description": "A simple serialization library supports circular references and built-in types",
   "repository": {
     "type": "git",
