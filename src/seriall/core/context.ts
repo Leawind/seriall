@@ -1,4 +1,4 @@
-import type { BiMap } from '@leawind/bimap';
+import type { BiMap } from '@leawind/bimap'
 
 /**
  * Bidirectional registry for global/shared object references.
@@ -10,11 +10,11 @@ import type { BiMap } from '@leawind/bimap';
  * Enables consistent reference tracking during serialization/deserialization
  * operations across multiple object graphs.
  */
-export type ContextPalette = BiMap<string, unknown>;
+export type ContextPalette = BiMap<string, unknown>
 
 /**
  * Simplified object-based format for defining context palettes.
  *
  * @see ContextPalette
  */
-export type ContextPaletteLike = Record<string, unknown>;
+export type ContextPaletteLike = Record<string, unknown>

@@ -1,6 +1,6 @@
-import type { ContextSync } from './context.ts';
-import type { Pure } from '../../seriall/core/pure.ts';
-import { deserializeRecursivelySync, serializeRecursivelySync } from './serialization.ts';
+import type { ContextSync } from './context.ts'
+import type { Pure } from '../../seriall/core/pure.ts'
+import { deserializeRecursivelySync, serializeRecursivelySync } from './serialization.ts'
 
 /**
  * Converts an object to an array of `SeriallPure` objects.
@@ -10,12 +10,12 @@ import { deserializeRecursivelySync, serializeRecursivelySync } from './serializ
  * @returns An array of `SeriallPure` objects.
  */
 export function obj2puresSync<T>(
-	obj: T,
-	contexts: ContextSync[],
+  obj: T,
+  contexts: ContextSync[],
 ): Pure[] {
-	const pures: Pure[] = [];
-	serializeRecursivelySync(obj, pures, contexts);
-	return pures;
+  const pures: Pure[] = []
+  serializeRecursivelySync(obj, pures, contexts)
+  return pures
 }
 
 /**
@@ -26,8 +26,8 @@ export function obj2puresSync<T>(
  * @returns The resulting object.
  */
 export function pures2objSync<T>(
-	pures: Pure[],
-	contexts: ContextSync[],
+  pures: Pure[],
+  contexts: ContextSync[],
 ): T {
-	return deserializeRecursivelySync(0, pures, contexts);
+  return deserializeRecursivelySync(0, pures, contexts)
 }

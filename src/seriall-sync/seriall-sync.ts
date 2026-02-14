@@ -1,20 +1,20 @@
-import * as toml from '@std/toml';
-import * as yaml from '@std/yaml';
-import { BiMap } from '@leawind/bimap';
+import * as toml from '@std/toml'
+import * as yaml from '@std/yaml'
+import { BiMap } from '@leawind/bimap'
 
-import { BUILTIN_PALETTE } from '../seriall/builtin/palette.ts';
-import type { Pure } from '../seriall/core/pure.ts';
-import type { StringifyFormatOptions } from '../seriall/utils.ts';
+import { BUILTIN_PALETTE } from '../seriall/builtin/palette.ts'
+import type { Pure } from '../seriall/core/pure.ts'
+import type { StringifyFormatOptions } from '../seriall/utils.ts'
 
-import { BUILTIN_ADAPTERS_SYNC } from './builtin/adapters.ts';
-import { obj2puresSync, pures2objSync } from './core/core.ts';
-import type { ContextSync, ContextSyncLike } from './core/context.ts';
+import { BUILTIN_ADAPTERS_SYNC } from './builtin/adapters.ts'
+import { obj2puresSync, pures2objSync } from './core/core.ts'
+import type { ContextSync, ContextSyncLike } from './core/context.ts'
 
 function buildSeriallContextSync(options: ContextSyncLike): ContextSync {
-	return {
-		palette: BiMap.from(options.palette || {}),
-		adapters: new Map(Object.entries(options.adapters || {})),
-	};
+  return {
+    palette: BiMap.from(options.palette || {}),
+    adapters: new Map(Object.entries(options.adapters || {})),
+  }
 }
 
 /**
@@ -27,37 +27,37 @@ function buildSeriallContextSync(options: ContextSyncLike): ContextSync {
  * @property builtinAdapters - Whether to include built-in type adapters (default: true)
  */
 export type SeriallOptionsSync = ContextSyncLike & {
-	contexts?: ContextSyncLike[];
-	builtinPalette?: boolean;
-	builtinAdapters?: boolean;
-};
+  contexts?: ContextSyncLike[]
+  builtinPalette?: boolean
+  builtinAdapters?: boolean
+}
 
 function parseSeriallOptionsSync(options: SeriallOptionsSync): ContextSync[] {
-	const contexts: ContextSync[] = [];
+  const contexts: ContextSync[] = []
 
-	if (options.palette || options.adapters) {
-		contexts.push(buildSeriallContextSync({
-			palette: options.palette,
-			adapters: options.adapters,
-		}));
-	}
+  if (options.palette || options.adapters) {
+    contexts.push(buildSeriallContextSync({
+      palette: options.palette,
+      adapters: options.adapters,
+    }))
+  }
 
-	if (options.contexts) {
-		for (const ctx of options.contexts) {
-			contexts.push(buildSeriallContextSync(ctx));
-		}
-	}
+  if (options.contexts) {
+    for (const ctx of options.contexts) {
+      contexts.push(buildSeriallContextSync(ctx))
+    }
+  }
 
-	options.builtinPalette = options.builtinPalette !== false;
-	options.builtinAdapters = options.builtinAdapters !== false;
-	if (options.builtinPalette || options.builtinAdapters) {
-		contexts.push({
-			palette: options.builtinPalette ? BUILTIN_PALETTE : new BiMap(),
-			adapters: options.builtinAdapters ? BUILTIN_ADAPTERS_SYNC : new Map(),
-		});
-	}
+  options.builtinPalette = options.builtinPalette !== false
+  options.builtinAdapters = options.builtinAdapters !== false
+  if (options.builtinPalette || options.builtinAdapters) {
+    contexts.push({
+      palette: options.builtinPalette ? BUILTIN_PALETTE : new BiMap(),
+      adapters: options.builtinAdapters ? BUILTIN_ADAPTERS_SYNC : new Map(),
+    })
+  }
 
-	return contexts;
+  return contexts
 }
 
 /**
@@ -70,8 +70,8 @@ function parseSeriallOptionsSync(options: SeriallOptionsSync): ContextSync[] {
  * @see Pure
  */
 export function purifySync<T>(obj: T, options: SeriallOptionsSync = {}): Pure[] {
-	const contexts = parseSeriallOptionsSync(options);
-	return obj2puresSync(obj, contexts);
+  const contexts = parseSeriallOptionsSync(options)
+  return obj2puresSync(obj, contexts)
 }
 
 /**
@@ -81,20 +81,20 @@ export function purifySync<T>(obj: T, options: SeriallOptionsSync = {}): Pure[] 
  * @returns A string representing the object in the specified format.
  */
 export function stringifySync<T>(
-	obj: T,
-	options: SeriallOptionsSync & Partial<StringifyFormatOptions> = {},
+  obj: T,
+  options: SeriallOptionsSync & Partial<StringifyFormatOptions> = {},
 ): string {
-	const contexts = parseSeriallOptionsSync(options);
-	const pures = obj2puresSync(obj, contexts);
-	switch (options.format) {
-		case 'toml':
-			return toml.stringify(pures as unknown as Record<string, unknown>);
-		case 'yaml':
-			return yaml.stringify(pures as unknown as Record<string, unknown>);
-		case 'json':
-		default:
-			return JSON.stringify(pures);
-	}
+  const contexts = parseSeriallOptionsSync(options)
+  const pures = obj2puresSync(obj, contexts)
+  switch (options.format) {
+    case 'toml':
+      return toml.stringify(pures as unknown as Record<string, unknown>)
+    case 'yaml':
+      return yaml.stringify(pures as unknown as Record<string, unknown>)
+    case 'json':
+    default:
+      return JSON.stringify(pures)
+  }
 }
 
 /**
@@ -107,7 +107,7 @@ export function stringifySync<T>(
  * @see purifySync
  * @see Pure
  */
-export function parseSync<T>(str: Pure[], options?: SeriallOptionsSync): T;
+export function parseSync<T>(str: Pure[], options?: SeriallOptionsSync): T
 /**
  * Deserialize a JSON string to an object.
  * @param str - The JSON string to parse.
@@ -115,32 +115,32 @@ export function parseSync<T>(str: Pure[], options?: SeriallOptionsSync): T;
  * @returns The parsed object.
  */
 export function parseSync<T>(
-	str: string,
-	options?: SeriallOptionsSync & Partial<StringifyFormatOptions>,
-): T;
+  str: string,
+  options?: SeriallOptionsSync & Partial<StringifyFormatOptions>,
+): T
 export function parseSync<T>(
-	arg0: Pure[] | string,
-	options: SeriallOptionsSync & Partial<StringifyFormatOptions> = {},
+  arg0: Pure[] | string,
+  options: SeriallOptionsSync & Partial<StringifyFormatOptions> = {},
 ): T {
-	const contexts = parseSeriallOptionsSync(options);
-	if (typeof arg0 === 'string') {
-		let pures: Pure[];
-		switch (options.format) {
-			case 'toml':
-				pures = toml.parse(arg0) as unknown as Pure[];
-				break;
-			case 'yaml':
-				pures = yaml.parse(arg0) as unknown as Pure[];
-				break;
-			case 'json':
-			default:
-				pures = JSON.parse(arg0) as unknown as Pure[];
-				break;
-		}
-		return pures2objSync(pures, contexts);
-	} else {
-		return pures2objSync(arg0, contexts);
-	}
+  const contexts = parseSeriallOptionsSync(options)
+  if (typeof arg0 === 'string') {
+    let pures: Pure[]
+    switch (options.format) {
+      case 'toml':
+        pures = toml.parse(arg0) as unknown as Pure[]
+        break
+      case 'yaml':
+        pures = yaml.parse(arg0) as unknown as Pure[]
+        break
+      case 'json':
+      default:
+        pures = JSON.parse(arg0) as unknown as Pure[]
+        break
+    }
+    return pures2objSync(pures, contexts)
+  } else {
+    return pures2objSync(arg0, contexts)
+  }
 }
 
 /**
@@ -154,6 +154,6 @@ export function parseSync<T>(
  * @see parsePures
  */
 export function deepCloneSync<T>(obj: T, options: SeriallOptionsSync = {}): T {
-	const contexts = parseSeriallOptionsSync(options);
-	return pures2objSync(obj2puresSync(obj, contexts), contexts);
+  const contexts = parseSeriallOptionsSync(options)
+  return pures2objSync(obj2puresSync(obj, contexts), contexts)
 }

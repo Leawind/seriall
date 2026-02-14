@@ -1,4 +1,4 @@
-export type StringifyFormatOptions = { format: 'json' | 'toml' | 'yaml' };
+export type StringifyFormatOptions = { format: 'json' | 'toml' | 'yaml' }
 
 /**
  * Checks if a symbol is registered in the global symbol registry.
@@ -9,7 +9,7 @@ export type StringifyFormatOptions = { format: 'json' | 'toml' | 'yaml' };
  * @returns   True if the symbol exists in the global registry, false otherwise
  */
 export function isGlobalSymbol(sb: symbol): boolean {
-	return Symbol.keyFor(sb) !== undefined;
+  return Symbol.keyFor(sb) !== undefined
 }
 
 /**
@@ -30,17 +30,17 @@ export function isGlobalSymbol(sb: symbol): boolean {
  * }
  */
 export function withSupers(
-	clazz: new (...args: unknown[]) => unknown,
+  clazz: new (...args: unknown[]) => unknown,
 ): Record<string, unknown> {
-	const m = {
-		[clazz.name]: clazz,
-	};
-	let sup = Object.getPrototypeOf(clazz);
-	while (sup !== Function.prototype) {
-		m[sup.name] = sup;
-		sup = Object.getPrototypeOf(sup);
-	}
-	return m;
+  const m = {
+    [clazz.name]: clazz,
+  }
+  let sup = Object.getPrototypeOf(clazz)
+  while (sup !== Function.prototype) {
+    m[sup.name] = sup
+    sup = Object.getPrototypeOf(sup)
+  }
+  return m
 }
 
 /**
@@ -50,7 +50,7 @@ export function withSupers(
  * @returns Formal symbol notation with proper quote escaping
  */
 export function symbolToString(sb: symbol): string {
-	return sb.description ? `Symbol("${sb.description.replaceAll('"', '\\"')}")` : `Symbol()`;
+  return sb.description ? `Symbol("${sb.description.replaceAll('"', '\\"')}")` : `Symbol()`
 }
 
 /**
@@ -60,19 +60,19 @@ export function symbolToString(sb: symbol): string {
  * @returns True if the object looks like a prototype, false otherwise
  */
 export function looksLikePrototype(obj: unknown): boolean {
-	if (obj === undefined) {
-		return false;
-	} else if (obj === null) {
-		return false;
-	}
+  if (obj === undefined) {
+    return false
+  } else if (obj === null) {
+    return false
+  }
 
-	const constructor = Object.getOwnPropertyDescriptor(obj, 'constructor');
+  const constructor = Object.getOwnPropertyDescriptor(obj, 'constructor')
 
-	if (constructor === undefined) {
-		return false;
-	} else {
-		return !(obj instanceof constructor.value);
-	}
+  if (constructor === undefined) {
+    return false
+  } else {
+    return !(obj instanceof constructor.value)
+  }
 }
 
 /**
@@ -82,13 +82,13 @@ export function looksLikePrototype(obj: unknown): boolean {
  * @returns `true` if the object looks like a class, `false` otherwise
  */
 export function looksLikeClass(obj: unknown): boolean {
-	if (obj === undefined || obj === null) {
-		return false;
-	} else {
-		return obj.constructor === Function &&
-			typeof obj === 'function' &&
-			/^[A-Z].*$/.test(obj.name);
-	}
+  if (obj === undefined || obj === null) {
+    return false
+  } else {
+    return obj.constructor === Function
+      && typeof obj === 'function'
+      && /^[A-Z].*$/.test(obj.name)
+  }
 }
 
 /**
@@ -106,75 +106,75 @@ export function looksLikeClass(obj: unknown): boolean {
  * console.log(clonedAdd(2, 3)); // 5
  */
 export function clonePureFunction<F extends (...args: never[]) => unknown>(
-	func: F,
+  func: F,
 ): F {
-	type FunctionPattern = {
-		regex: RegExp;
-		paramIndex: number;
-		bodyIndex: number;
-		bodyWrapper?: (body: string) => string;
-	};
+  type FunctionPattern = {
+    regex: RegExp
+    paramIndex: number
+    bodyIndex: number
+    bodyWrapper?: (body: string) => string
+  }
 
-	const funcStr = func.toString();
+  const funcStr = func.toString()
 
-	const patterns: FunctionPattern[] = [
-		// Regular function: function name(...) { ... }
-		{
-			regex: /^function\s*[\w$]*\s*\(([^)]*)\)\s*\{([\s\S]*)\}$/,
-			paramIndex: 1,
-			bodyIndex: 2,
-		},
-		// Arrow function with braces: (...) => { ... }
-		{
-			regex: /^\(?([^)]*)\)?\s*=>\s*\{([\s\S]*)\}$/,
-			paramIndex: 1,
-			bodyIndex: 2,
-		},
-		// Arrow function without braces: (...) => ...
-		{
-			regex: /^(?:\(([^)]*)\)|([\w$]+))\s*=>\s*(.+)$/,
-			paramIndex: 1,
-			bodyIndex: 3,
-			bodyWrapper: (body) => `return ${body};`,
-		},
-	];
+  const patterns: FunctionPattern[] = [
+    // Regular function: function name(...) { ... }
+    {
+      regex: /^function\s*[\w$]*\s*\(([^)]*)\)\s*\{([\s\S]*)\}$/,
+      paramIndex: 1,
+      bodyIndex: 2,
+    },
+    // Arrow function with braces: (...) => { ... }
+    {
+      regex: /^\(?([^)]*)\)?\s*=>\s*\{([\s\S]*)\}$/,
+      paramIndex: 1,
+      bodyIndex: 2,
+    },
+    // Arrow function without braces: (...) => ...
+    {
+      regex: /^(?:\(([^)]*)\)|([\w$]+))\s*=>\s*(.+)$/,
+      paramIndex: 1,
+      bodyIndex: 3,
+      bodyWrapper: (body) => `return ${body};`,
+    },
+  ]
 
-	let args: string[] = [];
-	let body: string = '';
+  let args: string[] = []
+  let body: string = ''
 
-	for (const pattern of patterns) {
-		const match = funcStr.match(pattern.regex);
-		if (match) {
-			const rawParams = match[pattern.paramIndex] || '';
-			args = rawParams
-				.split(',')
-				.map((p) => p.trim())
-				.filter((p) => p.length > 0);
+  for (const pattern of patterns) {
+    const match = funcStr.match(pattern.regex)
+    if (match) {
+      const rawParams = match[pattern.paramIndex] || ''
+      args = rawParams
+        .split(',')
+        .map((p) => p.trim())
+        .filter((p) => p.length > 0)
 
-			if (args.length === 1 && args[0].includes('=>')) {
-				args[0] = args[0].replace(/\s*=>.*/, '');
-			}
+      if (args.length === 1 && args[0].includes('=>')) {
+        args[0] = args[0].replace(/\s*=>.*/, '')
+      }
 
-			body = match[pattern.bodyIndex]?.trim() || '';
-			if (pattern.bodyWrapper) {
-				body = pattern.bodyWrapper(body);
-			}
-			break;
-		}
-	}
+      body = match[pattern.bodyIndex]?.trim() || ''
+      if (pattern.bodyWrapper) {
+        body = pattern.bodyWrapper(body)
+      }
+      break
+    }
+  }
 
-	if (!args || !body) {
-		throw new Error('Failed to parse function definition');
-	}
+  if (!args || !body) {
+    throw new Error('Failed to parse function definition')
+  }
 
-	let cloned: F;
-	try {
-		cloned = new Function(...args, body) as F;
-	} catch (e) {
-		throw new Error(
-			`Failed to reconstruct function: ${e instanceof Error ? e.message : String(e)}`,
-		);
-	}
-	cloned.prototype = func.prototype;
-	return cloned;
+  let cloned: F
+  try {
+    cloned = new Function(...args, body) as F
+  } catch (e) {
+    throw new Error(
+      `Failed to reconstruct function: ${e instanceof Error ? e.message : String(e)}`,
+    )
+  }
+  cloned.prototype = func.prototype
+  return cloned
 }

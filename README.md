@@ -39,7 +39,7 @@
 Import **seriall**
 
 ```ts
-import { seriall_sync as seriall } from '@leawind/seriall';
+import { seriall_sync as seriall } from '@leawind/seriall'
 ```
 
 ### Serialize
@@ -71,50 +71,50 @@ seriall.deepClone<T>(obj: T, options: SeriallOptions = {}): T;
 ### Simple value
 
 ```ts
-const alice = { name: '' };
-const json = seriall.stringify(alice);
-const dolly = seriall.parse<typeof alice>(json);
+const alice = { name: '' }
+const json = seriall.stringify(alice)
+const dolly = seriall.parse<typeof alice>(json)
 
-assert(alice.name === dolly.name);
+assert(alice.name === dolly.name)
 ```
 
 ### Instance of bulit-in Class
 
 ```typescript
 const original = {
-	array: [2, 3, 4],
-	set: new Set([12138, 7355608]),
-	map: new Map(Object.entries({ greet: 'hello world' })),
-	typed_array: new Int8Array([7, 6, 5, 4, 3]),
-};
+  array: [2, 3, 4],
+  set: new Set([12138, 7355608]),
+  map: new Map(Object.entries({ greet: 'hello world' })),
+  typed_array: new Int8Array([7, 6, 5, 4, 3]),
+}
 
 // deepClone means serialize and then deserialize
-const cloned = seriall.deepClone(original);
+const cloned = seriall.deepClone(original)
 
-assert(cloned.array.length === 3);
-assert(cloned.set.has(12138));
-assert(cloned.map.has('greet'));
-assert(cloned.typed_array[2] === 5);
+assert(cloned.array.length === 3)
+assert(cloned.set.has(12138))
+assert(cloned.map.has('greet'))
+assert(cloned.typed_array[2] === 5)
 ```
 
 ### Instance of custom Class
 
 ```ts
 class Cat {}
-const mimi = new Cat();
+const mimi = new Cat()
 
 // `mimi` is an instance of `Cat`, which is a custom Class.
 // If you don't tell it how to get `Cat`, it won't be able to deserialize `mimi` and make it an instance of `Cat`. Therefore it refuses to serialize it.
-assertThrows(() => seriall.purify(mimi), seriall.SeriallResolveFailedError);
+assertThrows(() => seriall.purify(mimi), seriall.SeriallResolveFailedError)
 
 // The second argument is telling seriall how to find class `Cat`: just by name "Cat"
-const pure = seriall.purify(mimi, { palette: { Cat: Cat } });
-console.debug(`mimi: `, pure);
+const pure = seriall.purify(mimi, { palette: { Cat: Cat } })
+console.debug(`mimi: `, pure)
 // Output:  [ { T: 6, C: 1, P: [] }, { T: 7, K:"Cat" } ]
 
 // It will be able to find constructor `Cat` and its prototype object by name "Cat" when deserializing.
-const clonedMimi = seriall.parse(pure, { palette: { Cat } });
-assert(clonedMimi instanceof Cat);
+const clonedMimi = seriall.parse(pure, { palette: { Cat } })
+assert(clonedMimi instanceof Cat)
 ```
 
 ## Builtin adapters
@@ -139,8 +139,8 @@ The implementation of those built-in adapters are at `src/seriall/builtin/adapte
   Example:
 
   ```ts
-  const arr = [1, 2];
-  arr.customProp = 'value'; // ❌ Won't survive serialization
+  const arr = [1, 2]
+  arr.customProp = 'value' // ❌ Won't survive serialization
   ```
 
 - **No field filtering**\

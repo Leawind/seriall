@@ -4,8 +4,8 @@ This doc containes some instructions of tasks. I'm going to let AI assistant hel
 
 Remember:
 
--   every task should be tested.
--   keep the original code format
+- every task should be tested.
+- keep the original code format
 
 ## Performance test
 
