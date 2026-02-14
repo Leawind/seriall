@@ -6,7 +6,7 @@
     "type": "git",
     "url": "git+https://github.com/Leawind/seriall.git"
   },
-  "license": "GPLv3",
+  "license": "MIT",
   "exports": {
     "./async": "./src/seriall-async/index.ts",
     "./sync": "./src/seriall-sync/index.ts",
